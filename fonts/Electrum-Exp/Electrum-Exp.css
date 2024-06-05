@@ -1,0 +1,45 @@
+@font-face {
+	font-family: Electrum-Exp;
+    font-weight: light;
+	src: url('ElectrumADFExp-Light.otf') format('opentype');
+}
+@font-face {
+	font-family: Electrum-Exp;
+	font-weight: light;
+	font-style: italic;
+	src: url('ElectrumADFExp-LightOblique.otf') format('opentype');
+}
+
+@font-face {
+	font-family: Electrum-Exp;
+	src: url('ElectrumADFExp-Regular.otf') format('opentype');
+}
+@font-face {
+	font-family: Electrum-Exp;
+	font-style: italic;
+	src: url('ElectrumADFExp-Oblique.otf') format('opentype');
+}
+
+@font-face {
+	font-family: Electrum-Exp;
+	font-weight: bold;
+	src: url('ElectrumADFExp-SemiBold.otf') format('opentype');
+}
+@font-face {
+	font-family: Electrum-Exp;
+	font-weight: bold;
+	font-style: italic;
+	src: url('ElectrumADFExp-SemiBoldOblique.otf') format('opentype');
+}
+
+@font-face {
+	font-family: Electrum-Exp;
+	font-weight: bolder;
+	src: url('ElectrumADFExp-Bold.otf') format('opentype');
+}
+@font-face {
+	font-family: Electrum-Exp;
+	font-weight: bolder;
+	font-style: italic;
+	src: url('ElectrumADFExp-BoldOblique.otf') format('opentype');
+}
