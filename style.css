@@ -3,6 +3,11 @@
     --mid-tone: #2b7a9b;
     --light-tone: #b1dbe8;
     --white: #ffffff;
+
+    --filter-dark-tone: brightness(0) saturate(100%) invert(23%) sepia(91%) saturate(1246%) hue-rotate(167deg) brightness(99%) contrast(107%);
+    --filter-mid-tone: brightness(0) saturate(100%) invert(37%) sepia(92%) saturate(385%) hue-rotate(152deg) brightness(93%) contrast(84%);
+    --filter-light-tone: brightness(0) saturate(100%) invert(86%) sepia(31%) saturate(281%) hue-rotate(159deg) brightness(94%) contrast(93%);
+    --filter-white: invert(1);
 }
 
 body, html {
@@ -62,10 +67,10 @@ body, html {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
-    filter: invert(1);
+    filter: var(--filter-mid-tone);
 }
 #navBar .navBtn.active .navImg {
-    filter: none;
+    filter: var(--filter-light-tone);
 }
 #navbarGrad {
     position: fixed;
@@ -83,6 +88,8 @@ body, html {
     position: relative;
     width: calc(100% - 60px);
     margin: 0px 30px;
+    max-width: 500px;
+    margin: auto;
 }
 .centerBogBox {
     background-color: var(--white);
