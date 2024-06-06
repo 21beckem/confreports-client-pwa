@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conf Reports</title>
+    <title>Conf-Reports</title>
     <link rel="stylesheet" href="fonts/Electrum-Exp/Electrum-Exp.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,9 +14,7 @@
     <div id="headerBarSpacer"></div>
     <!-- End Header -->
 
-
     <iframe id="appFrame" src="conf-home.html" frameborder="0"></iframe>
-
 
     <!-- Begin Navbar -->
     <div id="navBarSpacer"></div>
@@ -29,5 +27,12 @@
         </div>
     </div>
     <div id="navbarGrad"></div>
+    <script>
+// lock bottom bar to bottom of screen even if keyboard opens
+window.addEventListener('load', () => {navBar
+    document.getElementById('navBar').style.top = getComputedStyle(document.getElementById('navBar')).top;
+    document.getElementById('navbarGrad').style.top = getComputedStyle(document.getElementById('navbarGrad')).top;
+});
+    </script>
 </body>
 </html>

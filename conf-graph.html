@@ -24,26 +24,40 @@
                 <br><br>
                 <span>Which conference(s) do you want to graph?</span>
                 <br>
-                <input type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
-                <input type="text" style="width: 15px;" class="dial-select inputBubble" value="20" data-options="24, 23, 22, 21, , 19, 18, 17, 16, 15, 14, 13, 12, 11, 10">
+                <input id="strtMon" type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
+                <input id="strtYer" type="text" style="width: 15px;" class="dial-select inputBubble" value="20" data-options="24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10">
                 ↔
-                <input type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
-                <input type="text" style="width: 15px;" class="dial-select inputBubble" value="20" data-options="24, 23, 22, 21, , 19, 18, 17, 16, 15, 14, 13, 12, 11, 10">
+                <input id="stopMon" type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
+                <input id="stopYer" type="text" style="width: 15px;" class="dial-select inputBubble" value="20" data-options="24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10">
                 <br><br><br>
                 <span>What word/phrase do you want to graph?</span>
                 <br>
-                <input type="text" class="inputBubble">
+                <input type="text" class="inputBubble" id="phraseToSearch">
                 <br><br>
                 <span>Allow word variations?</span>
                 <br>
-                <input type="text" class="inputBubble" style="width: 50px;" value="No  Yes">
+                <div class="inputBubble toggle" input-id="allowVariations" checked="false">
+                    <div class="active">No</div>
+                    <div class="">Yes</div>
+                </div>
+                <input type="hidden" id="allowVariations" value="false">
                 <br><br>
-                <button class="inputBubble" style="background-color: var(--dark-tone); color: var(--white); font-size: 20px; padding: 5px 30px;">Graph!</button>
+                <button class="inputBubble" style="background-color: var(--dark-tone); color: var(--white); font-size: 20px; padding: 5px 30px; cursor: pointer;">Graph!</button>
                 <br><br>
             </center>
         </div>
 
     </div>
+    <script>
+Array.from(document.querySelectorAll('.toggle div')).forEach(el => el.setAttribute('onclick', `selectThis(this, '${el.parentElement.getAttribute('input-id')}')`));
+function selectThis(me, Iid) {
+    me.parentElement.querySelectorAll('.active').forEach( el => el.classList.remove('active') );
+    me.classList.add('active');
+    let toSet = me.innerHTML.toLowerCase().includes('yes') ? 'true' : 'false';
+    me.parentElement.setAttribute('checked', toSet);
+    document.getElementById(Iid).value = toSet;
+}
+    </script>
 
 
     <div id="navBarSpacer"></div>

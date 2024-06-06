@@ -10,7 +10,7 @@ const style = {
     backgroundColor: document.currentScript.getAttribute('background-color') || 'white',
     defaultColor: document.currentScript.getAttribute('default-color') || 'black',
     selectedColor: document.currentScript.getAttribute('selected-color') || 'white',
-    selectedHighlight: document.currentScript.getAttribute('selected-highlight') || '#007bff',
+    selectedHighlight: document.currentScript.getAttribute('selected-highlight') || '#007bff'
 }
 const dial_selects = document.querySelectorAll('.dial-select');
 const dial = document.querySelector('.dial');
@@ -22,12 +22,12 @@ dial_selects.forEach(dial_select => {
         // fill in dial
         dial.innerHTML = '';
         const options = dial_select.getAttribute('data-options').split(',');
-        dial.innerHTML += '<div></div>';
+        dial.innerHTML += '<div></div><div></div>';
         options.forEach(option => {
             let selected = String(option).trim()==String(dial_select.value).trim() ? 'class="selected"' : '';
-            dial.innerHTML += `<div ${selected}>${option}</div>`;
+            dial.innerHTML += `<div onclick="makeMeSelected(this)" ${selected}>${option}</div>`;
         });
-        dial.innerHTML += '<div></div>';
+        dial.innerHTML += '<div></div><div></div>';
 
         // show dial popup
         current_dial_input = dial_select;
@@ -41,12 +41,26 @@ dial_selects.forEach(dial_select => {
             const itemHeight = selectedItem.clientHeight;
             const scrollTo = selectedItemTop - (containerHeight / 2) + (itemHeight / 2);
             dial.scrollTo(0, scrollTo);
-            selectedItem.classList.add('selected');
         }
         highlightSelectedItem();
     });
 });
-
+function makeMeSelected(me) {
+    if (!current_dial_input) { return; }
+    // remove current selected item
+    document.querySelector('.dial div.selected').classList.remove('selected');
+    me.classList.add('selected');
+    const selectedItemTop = me.offsetTop;
+    const containerHeight = dial.clientHeight;
+    const itemHeight = me.clientHeight;
+    const scrollTo = selectedItemTop - (containerHeight / 2) + (itemHeight / 2);
+    dial.scrollTo({
+        top: scrollTo,
+        left: 0,
+        behavior: "smooth",
+    });
+    highlightSelectedItem(me);
+}
 dial.addEventListener('scroll', () => {
     highlightSelectedItemDebounced();
     adjustFontSize();
@@ -63,8 +77,8 @@ function adjustFontSize() {
         const distance = Math.abs(itemCenter - dialCenter);
 
         // Adjust the font size based on the distance from the center
-        const maxFontSize = 30; // Maximum font size
-        const minFontSize = 16; // Minimum font size
+        const maxFontSize = 40; // Maximum font size
+        const minFontSize = 10; // Minimum font size
         const maxDistance = dialRect.height / 2;
 
         let fontSize = maxFontSize - (distance / maxDistance) * (maxFontSize - minFontSize);
@@ -74,21 +88,20 @@ function adjustFontSize() {
     });
 }
 
-function highlightSelectedItem() {
-    let closestItem = null;
-    let closestDistance = Infinity;
-
-    dial.querySelectorAll('div').forEach((item) => {
-        const rect = item.getBoundingClientRect();
-        const dialRect = dial.getBoundingClientRect();
-        const distance = Math.abs(rect.top + rect.height / 2 - (dialRect.top + dialRect.height / 2));
-        
-        if (distance < closestDistance) {
-            closestDistance = distance;
-            closestItem = item;
-        }
-    });
-
+function highlightSelectedItem(closestItem = null) {
+    if (!closestItem) {
+        let closestDistance = Infinity;
+        dial.querySelectorAll('div').forEach((item) => {
+            const rect = item.getBoundingClientRect();
+            const dialRect = dial.getBoundingClientRect();
+            const distance = Math.abs(rect.top + rect.height / 2 - (dialRect.top + dialRect.height / 2));
+            
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestItem = item;
+            }
+        });
+    }
     dial.querySelectorAll('div').forEach(item => {
         item.classList.remove('selected');
         item.style.color = style.defaultColor;

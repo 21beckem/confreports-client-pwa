@@ -28,7 +28,7 @@
 .dialPopupBox .dial-container {
     width: 80%;
     max-width: 300px;
-    height: 150px;
+    height: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -71,6 +71,6 @@
     align-items: center;
 }
 
-.dialPopupBox .dial-container .dial div:last-child {
+.dialPopupBox .dial-container .dial div:first-child, .dialPopupBox .dial-container .dial div:last-child, .dialPopupBox .dial-container .dial div:nth-last-child(2) {
     border-bottom: none;
 }

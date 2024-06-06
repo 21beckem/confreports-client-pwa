@@ -104,6 +104,8 @@ iframe#appFrame {
     margin: auto;
 }
 .centerBogBox {
+    background-position: center;
+    background-size: cover;
     background-color: var(--white);
     border-radius: 20px;
     border: 7px solid var(--dark-tone);
@@ -134,4 +136,19 @@ iframe#appFrame {
     text-align: center;
     margin-top: 4px;
     font-family: Electrum-Exp;
+}
+.toggle {
+    width: 75px;
+    display: flex;
+    padding: 0 !important;
+    overflow: hidden;
+}
+.toggle div {
+    flex: 1;
+    padding: 5px;
+    cursor: pointer;
+}
+.toggle div.active {
+    background-color: var(--mid-tone);
+    color: var(--white);
 }
