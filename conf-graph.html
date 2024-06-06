@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="fonts/Electrum-Exp/Electrum-Exp.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="selectSwiper.css">
+    <style>
+.centerBogBox span {
+    font-size: 14px;
+}
+    </style>
 </head>
 <body>
     <div id="headerBarSpacer"></div>
@@ -16,9 +21,24 @@
         <div class="centerBogBox" style="color: var(--mid-tone);">
             <center>
                 <span style="font-size: 40px;">Graph It</span>
-                <p>Which conference(s) do you want to graph?</p>
+                <br><br>
+                <span>Which conference(s) do you want to graph?</span>
+                <br>
                 <input type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
-                <input type="text" style="width: 50px;" class="dial-select inputBubble" value="2020" data-options="2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010">
+                <input type="text" style="width: 15px;" class="dial-select inputBubble" value="20" data-options="24, 23, 22, 21, , 19, 18, 17, 16, 15, 14, 13, 12, 11, 10">
+                ↔
+                <input type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
+                <input type="text" style="width: 15px;" class="dial-select inputBubble" value="20" data-options="24, 23, 22, 21, , 19, 18, 17, 16, 15, 14, 13, 12, 11, 10">
+                <br><br><br>
+                <span>What word/phrase do you want to graph?</span>
+                <br>
+                <input type="text" class="inputBubble">
+                <br><br>
+                <span>Allow word variations?</span>
+                <br>
+                <input type="text" class="inputBubble" style="width: 50px;" value="No  Yes">
+                <br><br>
+                <button class="inputBubble" style="background-color: var(--dark-tone); color: var(--white); font-size: 20px; padding: 5px 30px;">Graph!</button>
                 <br><br>
             </center>
         </div>

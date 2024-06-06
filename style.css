@@ -128,8 +128,10 @@ iframe#appFrame {
 }
 .inputBubble {
     border-radius: 20px;
-    border: 2px solid var(--dark-tone);
+    border: 3px solid var(--dark-tone);
     color: var(--mid-tone);
     padding: 5px 10px;
     text-align: center;
+    margin-top: 4px;
+    font-family: Electrum-Exp;
 }

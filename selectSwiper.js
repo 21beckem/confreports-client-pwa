@@ -17,7 +17,6 @@ const dial = document.querySelector('.dial');
 const dialPopupBox = document.querySelector('.dialPopupBox');
 let current_dial_input = null;
 dial_selects.forEach(dial_select => {
-    console.log(dial_select);
     dial_select.addEventListener('click', () => {
         dial_select.blur();
         // fill in dial
