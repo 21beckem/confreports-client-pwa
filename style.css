@@ -123,3 +123,13 @@ iframe#appFrame {
     width: 100%;
     text-align: center;
 }
+.dialPopupBox .dial-container .dial {
+    border: 7px solid var(--dark-tone);
+}
+.inputBubble {
+    border-radius: 20px;
+    border: 2px solid var(--dark-tone);
+    color: var(--mid-tone);
+    padding: 5px 10px;
+    text-align: center;
+}

@@ -9,28 +9,6 @@
 </head>
 <body>
     <div id="headerBarSpacer"></div>
-    <div class="dialPopupBox">
-        <div class="dialPopupBackgroundDimmer"></div>
-        <div class="dial-container">
-            <div class="dial">
-                <div></div>
-                <div>2024</div>
-                <div>2023</div>
-                <div>2022</div>
-                <div>2021</div>
-                <div>2020</div>
-                <div>2019</div>
-                <div>2018</div>
-                <div>2017</div>
-                <div>2016</div>
-                <div>2015</div>
-                <div>2014</div>
-                <div>2013</div>
-                <div>2012</div>
-                <div></div>
-            </div>
-        </div>
-    </div>
 
     <div class="centerBogBoxesContainer">
         <div style="height: 50px;"></div>
@@ -39,7 +17,9 @@
             <center>
                 <span style="font-size: 40px;">Graph It</span>
                 <p>Which conference(s) do you want to graph?</p>
-                <input type="text" class="dial-select">
+                <input type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
+                <input type="text" style="width: 50px;" class="dial-select inputBubble" value="2020" data-options="2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010">
+                <br><br>
             </center>
         </div>
 
@@ -47,6 +27,6 @@
 
 
     <div id="navBarSpacer"></div>
-    <script src="selectSwiper.js"></script>
+    <script src="selectSwiper.js" selected-highlight="var(--mid-tone)"></script>
 </body>
 </html>
