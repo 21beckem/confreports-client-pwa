@@ -96,14 +96,14 @@ iframe#appFrame {
 /* End Navbar */
 
 
-.centerBogBoxesContainer {
+.centerBigBoxesContainer {
     position: relative;
     width: calc(100% - 60px);
     margin: 0px 30px;
     max-width: 500px;
     margin: auto;
 }
-.centerBogBox {
+.centerBigBox {
     background-position: center;
     background-size: cover;
     background-color: var(--white);
@@ -111,16 +111,60 @@ iframe#appFrame {
     border: 7px solid var(--dark-tone);
     overflow: hidden;
 }
+.tileBoxesContainer {
+    width: calc(100% - 20px);
+    margin: 0px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.tileBox {
+    flex: 1;
+    margin: 0px 7px;
+    background-position: center;
+    background-size: cover;
+    border-radius: 20px;
+    border: 5px solid var(--dark-tone);
+    display: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+.tileResults {
+    width: 100%;
+    display: flex;
+    margin-bottom: -20px;
+    flex-direction: column;
+    align-items: center;
+    color: var(--light-tone);
+    font-size: 20px;
+    background-color: rgba(0,0,0, 0.1);
+    box-shadow: 0px 50px rgba(0,0,0, 0.1);
+    opacity: 1;
+    color: var(--white);
+    transition: opacity 0.1s ease;
+}
+.tileResults span:first-child {
+    font-size: 60px;
+    opacity: 0.7;
+    -webkit-text-stroke: 1px var(--dark-tone);
+}
+.tileResults span:last-child {
+    font-size: 16px;
+    opacity: 0.7;
+    transform: translateY(-10px);
+}
 .tileBottom {
-    background: linear-gradient(to top, var(--white),transparent);
+    background: linear-gradient(to top, var(--white) 30%,transparent 100%);
     color: var(--mid-tone);
     position: relative;
     width: 100%;
     vertical-align: bottom;
+    font-size: 14px;
+    height: 50px;
 }
 .tileBottom span {
     position: absolute;
-    bottom: 0;
+    bottom: 3px;
     left: 0;
     width: 100%;
     text-align: center;
@@ -151,4 +195,31 @@ iframe#appFrame {
 .toggle div.active {
     background-color: var(--mid-tone);
     color: var(--white);
+}
+#searchInputParent {
+    width: 100%;
+    position: relative;
+}
+#searchInput {
+    border-radius: 50px;
+    border: 3px solid var(--dark-tone);
+    color: var(--mid-tone);
+    font-family: Electrum-Exp;
+    font-size: 20px;
+    padding: 5px 0px 5px 40px;
+    text-align: left;
+    width: calc(100% - 75px);
+    margin: 0px 15px 15px 15px;
+    text-decoration: none;
+}
+#searchIcon {
+    position: absolute;
+    top: 10px;
+    pointer-events: none;
+    left: 30px;
+    content: url('https://www.svgrepo.com/show/513607/search.svg');
+    filter: var(--filter-dark-tone);
+    width: 20px;
+    height: auto;
+    display: inline-block;
 }
