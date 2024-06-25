@@ -84,10 +84,10 @@ if (!firstTime) {
     <!-- Begin Navbar -->
     <div id="navBarSpacer"></div>
     <div id="navBar">
-        <div class="navBtn active">
+        <div id="confTabBtn" class="navBtn active" onclick="openTab('conf')">
             <div class="navImg" style="background-image: url('img/conf-icon.png')" alt=""></div>
         </div>
-        <div class="navBtn">
+        <div id="bomTabBtn" class="navBtn" onclick="openTab('bom')">
             <div class="navImg" style="background-image: url('img/bom-icon.png')" alt=""></div>
         </div>
     </div>
@@ -98,6 +98,16 @@ window.addEventListener('load', () => {navBar
     document.getElementById('navBar').style.top = getComputedStyle(document.getElementById('navBar')).top;
     document.getElementById('navbarGrad').style.top = getComputedStyle(document.getElementById('navbarGrad')).top;
 });
+function openTab(tab) {
+    document.getElementById('bomTabBtn').classList.remove('active');
+    document.getElementById('confTabBtn').classList.remove('active');
+    document.getElementById(tab + 'TabBtn').classList.add('active');
+    if (tab == 'conf') {
+        document.getElementById('appFrame').src = 'conf-home.html';
+    } else {
+        document.getElementById('appFrame').src = 'bom-home.html';
+    }
+}
     </script>
 </body>
 </html>
