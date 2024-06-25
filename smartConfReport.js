@@ -1,37 +1,66 @@
-const pageToLoad = new URLSearchParams(window.location.search).get('page');
+let pageToLoad = new URLSearchParams(window.location.search).get('page');
 let confTilesBox = document.getElementById('confTilesBox');
-
 let pageConfs = collectedConferences[pageToLoad];
 
-// create the tiles for this page
-createPageTiles()
-
-// start fetching each one of those conference data jsons
-for (let i=1; i < pageConfs.length; i++) {
-    const thisConfId = pageConfs[i];
-    fetch('https://21beckem.github.io/conference-data/' + thisConfId + '-full.json')
+if (pageToLoad.includes('-full')) {
+    pageToLoad = pageToLoad.split('-full')[0];
+    
+    // first grab that conference, then create the page
+    fetch('https://21beckem.github.io/conference-data/' + pageToLoad + '-full.json')
         .then(res => res.json())
         .then(res => {
-            pageConfs[i] = {
-                'id' : pageConfs[i],
-                'data' : res
+            // flatten sessions and put in same format as whole conf page
+            let talksList = new Array();
+            let idCounter = 0;
+            for (let i=0; i < res.sessions.length; i++) {
+                const thisSession = res.sessions[i];
+                for (let j=0; j < thisSession.talks.length; j++) {
+                    const thisTalk = thisSession.talks[j];
+                    thisTalk.id = 'talkId_' + idCounter;
+                    thisTalk.data = thisTalk.talkText;
+                    talksList.push(thisTalk);
+                    idCounter++;
+                }
             }
-            // preload the thumbnail for that tile
-            preloadImage(pageConfs[i].data.thumbnail, () => {
-                // update the image for that tile
-                document.getElementById('tile_' + pageConfs[i].id).style.backgroundImage = `url(${pageConfs[i].data.thumbnail})`;
-            })
+            pageConfs = talksList;
+            createPageTiles();
         })
+} else {
+    createConferencePage();
 }
 
-// if on main page preload images for other pages
-if (pageToLoad == 'main') {
-    for (let i = 0; i < Object.keys(collectedConferences).length; i++) {
-        const confPage = Object.keys(collectedConferences)[i];
-        if (confPage != pageToLoad) {
-            preloadImage(collectedConferences[confPage][0], () => {
-                document.getElementById('page_' + confPage).style.backgroundImage = `url(${collectedConferences[confPage][0]})`;
-            });
+
+function createConferencePage() {
+    // create the tiles for this page
+    createPageTiles()
+    
+    // start fetching each one of those conference data jsons
+    for (let i=1; i < pageConfs.length; i++) {
+        const thisConfId = pageConfs[i];
+        fetch('https://21beckem.github.io/conference-data/' + thisConfId + '-full.json')
+            .then(res => res.json())
+            .then(res => {
+                pageConfs[i] = {
+                    'id' : pageConfs[i],
+                    'data' : res
+                }
+                // preload the thumbnail for that tile
+                preloadImage(pageConfs[i].data.thumbnail, () => {
+                    // update the image for that tile
+                    document.getElementById('tile_' + pageConfs[i].id).style.backgroundImage = `url(${pageConfs[i].data.thumbnail})`;
+                })
+            })
+    }
+    
+    // if on main page preload images for other pages
+    if (pageToLoad == 'main') {
+        for (let i = 0; i < Object.keys(collectedConferences).length; i++) {
+            const confPage = Object.keys(collectedConferences)[i];
+            if (confPage != pageToLoad) {
+                preloadImage(collectedConferences[confPage][0], () => {
+                    document.getElementById('page_' + confPage).style.backgroundImage = `url(${collectedConferences[confPage][0]})`;
+                });
+            }
         }
     }
 }
@@ -68,7 +97,6 @@ function createPageTiles(searchTerm = '', wholeWord = false) {
             }
         }
         let thisDate = confId.split('-');
-        thisDate = (thisDate[1].includes('10') ? 'October' : 'April') + ' ' + thisDate[0];
 
         let resultsOpacity = 0;
         let resultsNumber = 0;
@@ -78,9 +106,19 @@ function createPageTiles(searchTerm = '', wholeWord = false) {
             resultsNumber = searchConfrence(searchTerm, wholeWord, thisConf.data);
         }
 
+        // if this is actually just one talk, not a conference
+        let isTalk = '';
+        if (thisConf.speaker) {
+            isTalk = 'isTalk';
+            thisDate = thisConf.title;
+            imgLink = thisConf.img;
+        } else {
+            thisDate = (thisDate[1].includes('10') ? 'October' : 'April') + ' ' + thisDate[0];
+        }
+
         // create the tile
         output += `
-        <div id="tile_${confId}" class="tileBox" style="background-image: url(${imgLink});">
+        <div id="tile_${confId}" class="tileBox ${isTalk}" style="background-image: url(${imgLink});" onclick="window.location.href = 'conf-smart-report.html?page=${confId}-full';">
             <div class="tileResults" style="opacity:${resultsOpacity};">
                 <span>${resultsNumber}</span>
                 <span>References</span>
@@ -127,6 +165,10 @@ function searchConferences() {
 function searchConfrence(searchTerm, wholeWord, confData) {
     let runningTotal = 0;
     let regex = new RegExp(searchTerm.toLowerCase(), "g");
+    if (!confData.sessions) {
+        // if given 1 talk text, not a conference
+        return (confData.toLowerCase().match(regex) || []).length;
+    }
     for (let i = 0; i < confData.sessions.length; i++) {
         const thisSession = confData.sessions[i];
         for (let j = 0; j < thisSession.talks.length; j++) {

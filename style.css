@@ -17,6 +17,7 @@ body, html {
     font-size: 16px;
     color: #000;
     background-color: var(--light-tone);
+    overscroll-behavior: none;
 }
 iframe#appFrame {
     position: absolute;
@@ -162,12 +163,25 @@ iframe#appFrame {
     font-size: 14px;
     height: 50px;
 }
+.tileBox.isTalk .tileBottom {
+    background: linear-gradient(to top, var(--white) 70%,transparent 100%);
+    overflow: hidden;
+}
 .tileBottom span {
     position: absolute;
     bottom: 3px;
     left: 0;
     width: 100%;
     text-align: center;
+}
+.tileBox.isTalk .tileBottom span {
+    top: 15px;
+    bottom: unset;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
 }
 .dialPopupBox .dial-container .dial {
     border: 7px solid var(--dark-tone);
