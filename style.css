@@ -70,9 +70,14 @@ iframe#appFrame {
     padding: 5px;
     cursor: pointer;
     position: relative;
+    color: var(--dark-tone);
+}
+#navBar .navBtn span {
+    display: none;
 }
 #navBar .navBtn.active {
     background-color: var(--dark-tone);
+    color: var(--light-tone);
 }
 #navBar .navBtn .navImg {
     height: 100%;
@@ -124,7 +129,9 @@ iframe#appFrame {
     justify-content: flex-start;
 }
 .tileBox {
-    flex: 0 0 calc(33.333% - 24px);
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: calc(33.333% - 24px);
     margin: 10px 7px;
     background-position: center;
     background-size: cover;
@@ -214,9 +221,15 @@ iframe#appFrame {
     background-color: var(--mid-tone);
     color: var(--white);
 }
+#tilePageParent {
+    width: 100%;
+    max-width: 550px;
+    margin: auto;
+}
 #searchInputParent {
     width: 100%;
     position: fixed;
+    left: 0;
     top: 95px;
     z-index: 2;
 }
@@ -258,13 +271,35 @@ iframe#appFrame {
 }
 
 /* Desktop styles */
-@media screen and (min-width: 760px) {
+@media screen and (min-width: 600px) {
     #headerBar {
         font-size: 10px;
-        padding: 8px 0px;
+        padding: 8px 10px;
+        justify-content: left;
     }
     #navBar {
         height: 40px;
+        width: 220px;
+        font-size: 10px;
+        border-width: 3px;
+        top: 5px !important;
+        margin-left: unset;
+        position: absolute;
+        left: unset;
+        right: 20px;
+        border: none;
+        border-radius: 10px;
+        transform: unset;
+    }
+    #navBar .navBtn span {
+        display: block;
+    }
+    #navBar .navBtn {
+        display: flex;
+        align-items: center;
+    }
+    #navbarGrad {
+        display: none;
     }
     .centerBigBoxesContainer {
         flex-direction: row;
@@ -273,14 +308,24 @@ iframe#appFrame {
         flex: 1;
         padding: 15px;
     }
+    .tileBoxesContainer {
+        width: fit-content;
+    }
+    .tileBox {
+        flex-basis: calc(20% - 24px);
+    }
     .tileBottom {
         height: 40px !important;
-        font-size: 20px !important;
+        font-size: 13px !important;
+    }
+    .tileBox.isTalk .tileBottom span {
+        font-size: 10px !important;
     }
     #searchInputParent {
-        top: 60px;
+        top: 53px;
+        transform: scale(0.75);
     }
     #headerBarExtraSpacer {
-        height: 10px;
+        height: 0px;
     }
 }
