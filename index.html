@@ -94,9 +94,11 @@ if (!firstTime) {
     <div id="navbarGrad"></div>
     <script>
 // lock bottom bar to bottom of screen even if keyboard opens
-window.addEventListener('load', () => {navBar
-    document.getElementById('navBar').style.top = getComputedStyle(document.getElementById('navBar')).top;
-    document.getElementById('navbarGrad').style.top = getComputedStyle(document.getElementById('navbarGrad')).top;
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('navBar').style.top = getComputedStyle(document.getElementById('navBar')).top;
+        document.getElementById('navbarGrad').style.top = getComputedStyle(document.getElementById('navbarGrad')).top;
+    }, 200);
 });
 function openTab(tab) {
     document.getElementById('bomTabBtn').classList.remove('active');
