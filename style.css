@@ -290,6 +290,7 @@ iframe#appFrame {
         border: none;
         border-radius: 10px;
         transform: unset;
+        background-color: var(--dark-tone);
     }
     #navBar .navBtn span {
         display: block;
@@ -297,7 +298,19 @@ iframe#appFrame {
     #navBar .navBtn {
         display: flex;
         align-items: center;
+        color: var(--light-tone);
     }
+    #navBar .navBtn.active {
+        background-color: var(--light-tone);
+        color: var(--dark-tone);
+    }
+    #navBar .navBtn .navImg {
+        filter: var(--filter-light-tone);
+    }
+    #navBar .navBtn.active .navImg {
+        filter: var(--filter-dark-tone);
+    }
+
     #navbarGrad {
         display: none;
     }
@@ -324,6 +337,9 @@ iframe#appFrame {
     #searchInputParent {
         top: 53px;
         transform: scale(0.75);
+    }
+    #searchInputParent #searchGrad {
+        transform: translateY(-10px) scaleX(1.5);
     }
     #headerBarExtraSpacer {
         height: 0px;

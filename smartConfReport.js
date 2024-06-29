@@ -130,7 +130,7 @@ function preloadImage(url, callback) {
     }
 }
 
-function createPageTiles(searchTerm = '', wholeWord = false) {
+function createPageTiles(searchTerm = '') {
     // create loader instead of just clearing the box
     confTilesBox.innerHTML = '<div class="loader"></div>';
     let output = '';
@@ -151,7 +151,7 @@ function createPageTiles(searchTerm = '', wholeWord = false) {
         // if searching, do the search
         if (searchTerm != '') {
             resultsOpacity = 1;
-            resultsNumber = searchConfrence(searchTerm, wholeWord, thisConf.data);
+            resultsNumber = searchConfrence(searchTerm, thisConf.data);
         }
 
         // if this is actually just one talk, not a conference
@@ -229,13 +229,17 @@ function searchConferences() {
     let searchTerm = document.getElementById('searchInput').value;
     searchTerm = searchTerm.trim();
     sessionStorage.setItem('lastSearchTerm', searchTerm);
-    let wholeWord = false;
-    createPageTiles(searchTerm, wholeWord);
+    createPageTiles(searchTerm);
 }
 
-function searchConfrence(searchTerm, wholeWord, confData) {
+function searchConfrence(searchTerm, confData) {
     let runningTotal = 0;
-    let regex = new RegExp(searchTerm.toLowerCase(), "g");
+    searchTerm = searchTerm.trim().toLowerCase(); // trim and convert to lower case
+    searchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // excape chars that will confuse regex
+    searchTerm = searchTerm.replace('\\*', '\\w*'); // add the wildcard from the *
+    searchTerm = "\\b" + searchTerm + "\\b"; // add boundaries at beginning and end
+    let regex = new RegExp(searchTerm, "g"); // create the regex
+    console.log(searchTerm);
     if (!confData.sessions) {
         if (confData.isSession) {
             // if given just 1 session, turn it into a conference with just 1 session
