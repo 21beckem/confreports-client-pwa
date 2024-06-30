@@ -1,0 +1,52 @@
+#graphTableMainParent {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+#graphTableMainParent .topHeaderRow {
+    border-bottom: 4px solid var(--dark-tone);
+    height: 32px !important;
+}
+#graphTableMainParent .graphTableWindow {
+    width: 100%;
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#graphTable {
+    width: 100%;
+}
+.graphRow {
+    position: relative;
+    width: calc(100% - 10px);
+    display: flex;
+    padding-right: 10px;
+}
+.graphRow .leftTitle {
+    width: 70px;
+    padding: 10px 5px;
+    text-align: center;
+    border-right: 4px solid var(--dark-tone);
+}
+.graphRow .bar {
+    position: absolute;
+    left: 84px; /* leftTitle (width + padding + border-right) */
+    border-radius: 0 5px 5px 0;
+    top: 10px;
+    height: calc(100% - 20px);
+    width: 0;
+    background-color: var(--dark-tone);
+}
+.graphRow .graphSquare {
+    flex: 1;
+    border-right: 2px solid var(--light-tone);
+}
+.graphRow .graphSquareNum {
+    flex: 1;
+    border-right: 2px solid transparent;
+    text-align: center;
+    font-size: 20px;
+    padding: 4px 0px;
+    transform: translate(50%, 0px);
+}

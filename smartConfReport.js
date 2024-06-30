@@ -239,7 +239,6 @@ function searchConfrence(searchTerm, confData) {
     searchTerm = searchTerm.replace('\\*', '\\w*'); // add the wildcard from the *
     searchTerm = "\\b" + searchTerm + "\\b"; // add boundaries at beginning and end
     let regex = new RegExp(searchTerm, "g"); // create the regex
-    console.log(searchTerm);
     if (!confData.sessions) {
         if (confData.isSession) {
             // if given just 1 session, turn it into a conference with just 1 session

@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="fonts/Electrum-Exp/Electrum-Exp.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="selectSwiper.css">
+    <script src="jsalert.js"></script>
+    <script src="https://21beckem.github.io/conference-data/collected-conferences.js"></script>
     <style>
 .centerBigBox span {
     font-size: 14px;
@@ -15,36 +17,38 @@
 <body>
     <div id="headerBarSpacer"></div>
 
-    <div class="centerBigBoxesContainer">
+    <div class="centerBigBoxesContainer" style="flex-direction: row; align-items: center;">
         <div style="height: 50px;"></div>
 
-        <div class="centerBigBox" style="color: var(--mid-tone);">
-            <center>
-                <span style="font-size: 40px;">Graph It</span>
-                <br><br>
-                <span>Which conference(s) do you want to graph?</span>
-                <br>
-                <input id="strtMon" type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
-                <input id="strtYer" type="text" style="width: 15px;" class="dial-select inputBubble" value="20" data-options="24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10">
-                ↔
-                <input id="stopMon" type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
-                <input id="stopYer" type="text" style="width: 15px;" class="dial-select inputBubble" value="20" data-options="24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10">
-                <br><br><br>
-                <span>What word/phrase do you want to graph?</span>
-                <br>
-                <input type="text" class="inputBubble" id="phraseToSearch">
-                <br><br>
-                <span>Allow word variations?</span>
-                <br>
-                <div class="inputBubble toggle" input-id="allowVariations" checked="false">
-                    <div class="active">No</div>
-                    <div class="">Yes</div>
-                </div>
-                <input type="hidden" id="allowVariations" value="false">
-                <br><br>
-                <button class="inputBubble" style="background-color: var(--dark-tone); color: var(--white); font-size: 20px; padding: 5px 30px; cursor: pointer;">Graph!</button>
-                <br><br>
-            </center>
+        <div class="centerBigBox" style="color: var(--mid-tone); margin: 0px -13px; padding: 10px 0px;">
+            <form action="conf-graph-output.html" method="GET">
+                <center>
+                    <span style="font-size: 40px;">Graph It</span>
+                    <br><br>
+                    <span>Which conference(s) do you want to graph?</span>
+                    <br>
+                    <input name="strtMon" id="strtMon" type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
+                    <input name="strtYer" id="strtYer" type="text" style="width: 29px;" class="dial-select inputBubble">
+                    ↔
+                    <input name="stopMon" id="stopMon" type="text" style="width: 50px;" class="dial-select inputBubble" value="April" data-options="April, October">
+                    <input name="stopYer" id="stopYer" type="text" style="width: 29px;" class="dial-select inputBubble">
+                    <br><br><br>
+                    <span>What word/phrase do you want to graph?</span>
+                    <br>
+                    <input name="phraseToSearch" type="text" class="inputBubble" id="phraseToSearch" value="love">
+                    <br><br>
+                    <span>Allow word variations?</span>
+                    <br>
+                    <div class="inputBubble toggle" input-id="allowVariations" checked="false">
+                        <div class="active">No</div>
+                        <div class="">Yes</div>
+                    </div>
+                    <input name="allowVariations" type="hidden" id="allowVariations" value="false">
+                    <br><br>
+                    <button class="inputBubble" style="background-color: var(--dark-tone); color: var(--white); font-size: 20px; padding: 5px 30px; cursor: pointer;" onclick="checkFormBeforeSubmit()">Graph!</button>
+                    <br><br>
+                </center>
+            </form>
         </div>
 
     </div>
@@ -56,6 +60,53 @@ function selectThis(me, Iid) {
     let toSet = me.innerHTML.toLowerCase().includes('yes') ? 'true' : 'false';
     me.parentElement.setAttribute('checked', toSet);
     document.getElementById(Iid).value = toSet;
+}
+
+// fill in year options from collected conferences
+newestYear = 0;
+oldestYear = 9999;
+Object.keys(collectedConferences).forEach( pageName => {
+    if (pageName == 'main') {
+        pageName = collectedConferences[pageName][collectedConferences[pageName].length - 1].split('-')[0] + '-' + collectedConferences[pageName][1].split('-')[0];
+    }
+    let startYear = parseInt(pageName.split('-')[0]);
+    let endinYear = parseInt(pageName.split('-')[1]);
+    if (startYear < oldestYear) { oldestYear = startYear; }
+    if (endinYear > newestYear) { newestYear = endinYear; }
+});
+let years = Array.from({length: newestYear - oldestYear + 1}, (_, i) => oldestYear + i);
+years = years.reverse();
+document.getElementById('strtYer').setAttribute('data-options', years.join(', '));
+document.getElementById('strtYer').setAttribute('value', years[0]);
+document.getElementById('stopYer').setAttribute('data-options', years.join(', '));
+document.getElementById('stopYer').setAttribute('value', years[years.length - 1]);
+document.getElementById('strtMon').setAttribute('value', collectedConferences['main'][1].split('-')[1] == '04' ? 'April' : 'October');
+
+function checkFormBeforeSubmit() {
+    if (document.getElementById('phraseToSearch').value == '') {
+        JSAlert.alert('Please enter a search phrase');
+        event.preventDefault();
+    } else {
+        if (document.getElementById('strtYer').value > document.getElementById('stopYer').value) {
+            // if the 2 dates are in the wrong order, flip them
+            let tempYer = document.getElementById('strtYer').value;
+            let tempMon = document.getElementById('strtMon').value;
+            document.getElementById('strtYer').value = document.getElementById('stopYer').value;
+            document.getElementById('strtMon').value = document.getElementById('stopMon').value;
+            document.getElementById('stopYer').value = tempYer;
+            document.getElementById('stopMon').value = tempMon;
+        } else if (document.getElementById('strtYer').value == document.getElementById('stopYer').value) {
+            // if the 2 years are the same, check if the months are in the wrong order
+            if (document.getElementById('strtMon').value == 'April' && document.getElementById('stopMon').value == 'October') {
+                let tempYer = document.getElementById('strtYer').value;
+                let tempMon = document.getElementById('strtMon').value;
+                document.getElementById('strtYer').value = document.getElementById('stopYer').value;
+                document.getElementById('strtMon').value = document.getElementById('stopMon').value;
+                document.getElementById('stopYer').value = tempYer;
+                document.getElementById('stopMon').value = tempMon;
+            }
+        }
+    }
 }
     </script>
 
