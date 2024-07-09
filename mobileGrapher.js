@@ -19,11 +19,9 @@ class MobileGrapher {
         // get infos and make things to paste
         let maxValue = Math.max(...this.data.vals);
         const {intervalSize, numberOfIntervals} = MobileGrapher.calculateIntervals(maxValue);
-        console.log(intervalSize, numberOfIntervals);
         let graphSquares = Array.from({length: numberOfIntervals}, (_, i) => '<div class="graphSquare"></div>').join('');
 
         let contentWidth = this.graphParentEl.clientWidth - 105;
-        console.log('contentWidth', contentWidth);
 
         // make topHeaderRow
         let topHeaderRow = Array.from({length: numberOfIntervals}, (_, i) => `<div class="graphSquareNum">${(i + 1) * intervalSize}</div>`).join('');
@@ -38,7 +36,7 @@ class MobileGrapher {
             toOutput += `
                     <div class="graphRow">
                         <div class="leftTitle">${thisBar}</div>
-                        <div class="bar" style="width: ${computedSize}px"></div>
+                        <div class="bar" style="width: ${computedSize}px">${thisVal}&nbsp;</div>
                         ${graphSquares}
                     </div>`;
         }
@@ -54,7 +52,7 @@ class MobileGrapher {
             </div>
         `;
     }
-    static calculateIntervals(maxValue, targetIntervals = 6) {
+    static calculateIntervals(maxValue, targetIntervals = 5) {
         const niceNumbers = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
         
         let intervalSize = maxValue / targetIntervals;
@@ -68,5 +66,9 @@ class MobileGrapher {
           intervalSize: niceInterval,
           numberOfIntervals: numberOfIntervals
         };
-      }
+    }
+    static setLoader(graphParentEl) {
+        document.getElementById(graphParentEl).classList.add('mobileGrapher');
+        document.getElementById(graphParentEl).innerHTML = `<div class="loaderBox"><span class="loader"></span></div>`;
+    }
 }

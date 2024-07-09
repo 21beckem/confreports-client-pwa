@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://21beckem.github.io/conference-data/collected-conferences.js"></script>
     <link rel="stylesheet" href="mobileGrapher.css">
+    <script src="jsalert.js"></script>
 </head>
 <body>
     
@@ -21,22 +22,7 @@
 
 
     <script src="mobileGrapher.js"></script>
-    <script>
-let urlPrms = new URLSearchParams(window.location.search);
-const formData = {
-    strtMon  : urlPrms.get('strtMon'),
-    strtYer : urlPrms.get('strtYer'),
-    stopMon : urlPrms.get('stopMon'),
-    stopYer : urlPrms.get('stopYer'),
-    phraseToSearch : urlPrms.get('phraseToSearch'),
-    allowVariations : urlPrms.get('allowVariations')
-}
-console.log(formData);
-
-new MobileGrapher('myGraph', {
-    bars: ['April<br>2000', 'October<br>2000', 'April<br>2001', 'October<br>2001', 'April<br>2002', 'October<br>2002', 'April<br>2001', 'October<br>2001', 'April<br>2000', 'October<br>2000'],
-    vals: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
-});
-    </script>
+    <script src="searchAlgorithm.js"></script>
+    <script src="conf-graph-output.js"></script>
 </body>
 </html>
