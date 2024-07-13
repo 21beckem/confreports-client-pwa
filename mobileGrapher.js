@@ -25,7 +25,7 @@ class MobileGrapher {
 
         // make topHeaderRow
         let topHeaderRow = Array.from({length: numberOfIntervals}, (_, i) => `<div class="graphSquareNum">${(i + 1) * intervalSize}</div>`).join('');
-        this.graphParentEl.querySelector('.topHeaderRow.graphRow').innerHTML = `<div class="leftTitle" style="background-color: var(--dark-tone);"></div>` + topHeaderRow;
+        this.graphParentEl.querySelector('.topHeaderRow.graphRow').innerHTML = `<div class="leftTitle totalBox" style="background-color: var(--dark-tone); color: var(--light-tone);margin-top:-8px;"></div>` + topHeaderRow;
 
         // make the graph
         let toOutput = '';
@@ -41,6 +41,7 @@ class MobileGrapher {
                     </div>`;
         }
         this.graphParentEl.querySelector('.graphTable').innerHTML = toOutput;
+        this.graphParentEl.querySelector('.totalBox').innerHTML = 'Total:<br>' + this.data.vals.reduce((partialSum, a) => partialSum + a, 0);
     }
 
     createGraphBody() {

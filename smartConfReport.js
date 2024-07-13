@@ -151,7 +151,8 @@ function createPageTiles(searchTerm = '') {
         // if searching, do the search
         if (searchTerm != '') {
             resultsOpacity = 1;
-            resultsNumber = searchConfrence(searchTerm, thisConf.data);
+            let AL = new searchAlgorithm();
+            resultsNumber = AL.searchConfrence(searchTerm, thisConf.data);
         }
 
         // if this is actually just one talk, not a conference

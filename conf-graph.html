@@ -37,12 +37,13 @@
                     <br>
                     <input name="phraseToSearch" type="text" class="inputBubble" id="phraseToSearch" value="">
                     <br><br>
-                    <span>Allow word variations?</span>
-                    <br>
+                    <span style="text-decoration: underline;" onclick="howToAllowWordVariations()">Want to allow word variations? <span class="wordVariationsHelper"></span></span>
+                    <!-- <br>
                     <div class="inputBubble toggle" input-id="allowVariations" checked="false">
                         <div class="active">No</div>
                         <div class="">Yes</div>
-                    </div>
+                    </div> -->
+                    <br>
                     <input name="allowVariations" type="hidden" id="allowVariations" value="false">
                     <br><br>
                     <button class="inputBubble" style="background-color: var(--dark-tone); color: var(--white); font-size: 20px; padding: 5px 30px; cursor: pointer;" onclick="checkFormBeforeSubmit()">Graph!</button>
@@ -60,6 +61,15 @@ function selectThis(me, Iid) {
     let toSet = me.innerHTML.toLowerCase().includes('yes') ? 'true' : 'false';
     me.parentElement.setAttribute('checked', toSet);
     document.getElementById(Iid).value = toSet;
+}
+
+function howToAllowWordVariations() {
+    JSAlert.alert(`
+    <p>Conf-Reports supports the asterisk wildcard. Use an asterisk in your search to represent letters or a word. A few examples:</p>
+    <div class="inputBubble" style="transform: translateY(10px);">walk*</div><p> walk, walking, walked, etc.</p>
+    <div class="inputBubble" style="transform: translateY(10px);">*light</div><p> light, delight, flashlight, etc.</p>
+    <div class="inputBubble" style="transform: translateY(10px);">his * grace</div><p> "His atoning grace", "His divine grace", "His loving grace", etc. </p>
+    `, '<span style="color: var(--dark-tone); font-weight: bold; font-size: 20px;">Word Variations</span>');
 }
 
 // fill in year options from collected conferences
