@@ -32,12 +32,39 @@ html, body {
 }
 #foundWordsPanel .title {
     font-size: 22px;
-    transform: translate(calc(-50% + 10px), calc(100% + 15px)) rotate(-90deg);
+    transform: translate(calc(-50% + 10px), calc(100%)) rotate(-90deg);
     transition: 0.3s ease;
     color: var(--dark-tone);
 }
 #foundWordsPanel.open .title {
     transform: translate(10px, 0) rotate(0);
+}
+#foundWordsPanel caret {
+    position: absolute;
+    left: 3px;
+    bottom: 0;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>');
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: var(--filter-mid-tone);
+    animation: bouceCaret 2s cubic-bezier(0.52, -0.02, 0.46, 0.98) infinite;
+    transition: all 0.3s ease;
+}
+#foundWordsPanel.open caret {
+    transform: translateX(-10px) scaleX(-1);
+}
+@keyframes bouceCaret {
+    0% {
+        left: 5px;
+    }
+    50% {
+        left: 1px;
+    }
+    100% {
+        left: 5px;
+    }
 }
 #foundWordsPanel .foundWordsTable {
     padding: 10px;
@@ -78,8 +105,9 @@ html, body {
     </div>
 
     <div id="foundWordsPanel" style="display: none;" onclick="this.classList.toggle('open')">
-        <div style="position: relative; height: 100%; width: 100%;">
+        <div style="position: relative; width: 100%; height: 100%; min-height: 180px;">
             <div class="title">Found Words</div>
+            <caret></caret>
             <div style="max-height: 450px; overflow-y: scroll; overflow-x: hidden;">
                 <div class="foundWordsTable"></div>
             </div>

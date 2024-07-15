@@ -34,7 +34,9 @@ async function main() {
     // fetch each conference
     for (let i = 0; i < flatList.length; i++) {
         const thisConfId = flatList[i][0] + '-' + flatList[i][1];
-        const confData = fetch('https://21beckem.github.io/conference-data/' + thisConfId + '-full.json').then(res => res.json()).then(res => AL.searchConfrence(formData.phraseToSearch, res));
+        const confData = fetch('https://21beckem.github.io/conference-data/' + thisConfId + '-full.json')
+            .then(res => res.json())
+            .then(res => AL.searchConfrence(formData.phraseToSearch, res));
         storedConferences.push(confData);
     }
 
@@ -42,15 +44,24 @@ async function main() {
     for (let i = 0; i < storedConferences.length; i++) {
         storedConferences[i] = await storedConferences[i];
     }
-    console.log(AL.founds);
+    //console.log(AL.founds);
 
     // init mobile grapher
     new MobileGrapher('myGraph', {
         bars: [...flatList].map(x => (x[1]=='04' ? 'April' : 'October') + '<br>' + x[0]),
         vals: storedConferences,
+        links: [...flatList].map(x => x.join('-')),
+        link_callback: (thisLink) => {
+            JSAlert.confirm('Want to inspect this conference?').then((result) => {
+                if (result) {
+                    sessionStorage.setItem('lastSearchTerm', formData_formated.phraseToSearch);
+                    window.location.href = `conf-smart-report.html?page=${thisLink}-full`;
+                }
+            });
+        }
     });
 
-    // fill in found words if needed  </td><td>Word</td><td>100</td></tr>
+    // fill in found words if needed
     if (formData_formated.phraseToSearch.includes('*')) {
         document.getElementById('foundWordsPanel').querySelector('.foundWordsTable').innerHTML =
             Object.entries(AL.founds).sort((a, b) => b[1] - a[1])

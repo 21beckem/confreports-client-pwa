@@ -2,6 +2,10 @@ class MobileGrapher {
     constructor(graphParentElId, data) {
         this.graphParentEl = document.getElementById(graphParentElId);
         this.data = data;
+        this.uniqueId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+        // register this instance to a window variable
+        window['MobileGrapher_instance-' + this.uniqueId] = this;
 
         if (!this.data.hasOwnProperty('bars') || !this.data.hasOwnProperty('vals')) {
             console.error('MobileGrapher data must have bars and vals properties');
@@ -9,6 +13,15 @@ class MobileGrapher {
         } else if (this.data.bars.length != this.data.vals.length) {
             console.error('MobileGrapher bars and vals arrays must be the same length');
             return;
+        } else if (this.data.hasOwnProperty('links') && this.data.links.length > 0) {
+            if (this.data.links.length != this.data.bars.length) {
+                console.error('MobileGrapher links and bars arrays must be the same length');
+                return;
+            }
+            if (!this.data.link_callback) {
+                console.error('if data.links is set, data.link_callback must also be set');
+                return;
+            }
         }
 
         this.createGraphBody();
@@ -27,18 +40,25 @@ class MobileGrapher {
         let topHeaderRow = Array.from({length: numberOfIntervals}, (_, i) => `<div class="graphSquareNum">${(i + 1) * intervalSize}</div>`).join('');
         this.graphParentEl.querySelector('.topHeaderRow.graphRow').innerHTML = `<div class="leftTitle totalBox" style="background-color: var(--dark-tone); color: var(--light-tone);margin-top:-8px;"></div>` + topHeaderRow;
 
+        // handle links from data
+        let addLinks = this.data.hasOwnProperty('links');
+
         // make the graph
         let toOutput = '';
         for (let i = 0; i < this.data.bars.length; i++) {
             const thisBar = this.data.bars[i];
             const thisVal = this.data.vals[i];
             const computedSize = (thisVal / (intervalSize * numberOfIntervals)) * contentWidth;
+            let link = '';
+            if (addLinks) {
+                link = ` onclick="MobileGrapher.openLinkInInstance('${this.uniqueId}', ${i})"`;
+            }
             toOutput += `
-                    <div class="graphRow">
-                        <div class="leftTitle">${thisBar}</div>
-                        <div class="bar" style="width: ${computedSize}px">${thisVal}&nbsp;</div>
-                        ${graphSquares}
-                    </div>`;
+                <div class="graphRow">
+                    <div class="leftTitle">${thisBar}</div>
+                    <div${link} class="bar" style="width: ${computedSize}px">${thisVal}&nbsp;</div>
+                    ${graphSquares}
+                </div>`;
         }
         this.graphParentEl.querySelector('.graphTable').innerHTML = toOutput;
         this.graphParentEl.querySelector('.totalBox').innerHTML = 'Total:<br>' + this.data.vals.reduce((partialSum, a) => partialSum + a, 0);
@@ -52,6 +72,10 @@ class MobileGrapher {
                 <div class="graphTable"></div>
             </div>
         `;
+    }
+    static openLinkInInstance(uniqueId, index) {
+        let inst =  window['MobileGrapher_instance-' + uniqueId];
+       inst.data.link_callback(inst.data.links[index]);
     }
     static calculateIntervals(maxValue, targetIntervals = 5) {
         const niceNumbers = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
