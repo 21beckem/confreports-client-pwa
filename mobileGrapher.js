@@ -1,5 +1,5 @@
 class MobileGrapher {
-    constructor(graphParentElId, data) {
+    constructor(graphParentElId, data, graphNow = true) {
         this.graphParentEl = document.getElementById(graphParentElId);
         this.data = data;
         this.uniqueId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -24,12 +24,21 @@ class MobileGrapher {
             }
         }
 
-        this.createGraphBody();
-        this.graph();
+        if (graphNow) {
+            this.createGraphBody();
+            this.graph();
+        }
+    }
+
+    remove() {
+        this.graphParentEl.remove();
+        delete window['MobileGrapher_instance-' + this.uniqueId];
     }
 
     graph() {
         // get infos and make things to paste
+        console.log(this.data);
+        
         let maxValue = Math.max(...this.data.vals);
         const {intervalSize, numberOfIntervals} = MobileGrapher.calculateIntervals(maxValue);
         let graphSquares = Array.from({length: numberOfIntervals}, (_, i) => '<div class="graphSquare"></div>').join('');

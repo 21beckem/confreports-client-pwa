@@ -3,18 +3,30 @@ class searchAlgorithm {
         this.reset();
     }
     reset() {
+        this.exceptions = [];
         this.founds = {};
         this.total = 0;
     }
+    addException(exception) {
+        this.exceptions.push(exception);
+    }
+    removeException(exception) {
+        this.exceptions = this.exceptions.filter(e => e != exception);
+    }
 
-    addFoundResult(theseFounds) {
+    filterFounds(theseFounds) {
+        let totalAllowedFound = 0;
         theseFounds.forEach(found => {
+            if (this.exceptions.includes(found)) {
+                return;
+            }
             this.founds[found] = this.founds[found] ? this.founds[found] + 1 : 1;
+            totalAllowedFound++;
         });
+        return totalAllowedFound;
     };
 
     searchConfrence(searchTerm, confData) {
-    
         let runningTotal = 0;
         searchTerm = searchTerm.trim().toLowerCase(); // trim and convert to lower case
         searchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // excape chars that will confuse regex
@@ -43,7 +55,6 @@ class searchAlgorithm {
 
     searchText(regex, textBody) {
         let theseFounds = ( textBody.toLowerCase().match(regex) || [] );
-        this.addFoundResult(theseFounds);
-        return theseFounds.length;
+        return this.filterFounds(theseFounds);
     }
 }

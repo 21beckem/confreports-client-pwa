@@ -26,30 +26,35 @@ if (formData_formated.stopMon == '04' && flatList[0][1] == '10') { flatList.shif
 //console.log(flatList);
 
 let AL = new searchAlgorithm();
-async function main() {
-    
-    // make array for stored conferences
-    let storedConferences = [];
+let storedConferences = [];
+let myGrapher;
 
+async function fetchConfrences() {
     // fetch each conference
     for (let i = 0; i < flatList.length; i++) {
         const thisConfId = flatList[i][0] + '-' + flatList[i][1];
         const confData = fetch('https://21beckem.github.io/conference-data/' + thisConfId + '-full.json')
-            .then(res => res.json())
-            .then(res => AL.searchConfrence(formData.phraseToSearch, res));
+            .then(res => res.json());
         storedConferences.push(confData);
     }
-
     // wait for all of them
     for (let i = 0; i < storedConferences.length; i++) {
         storedConferences[i] = await storedConferences[i];
     }
-    //console.log(AL.founds);
+}
 
-    // init mobile grapher
-    new MobileGrapher('myGraph', {
+async function searchConfrences() {
+    let confVals = Array(storedConferences.length);
+    for (let i = 0; i < storedConferences.length; i++) {
+        confVals[i] = AL.searchConfrence(formData_formated.phraseToSearch, storedConferences[i]);
+    }
+    return confVals;
+}
+
+function createGraph(vals) {
+    myGrapher.data = {
         bars: [...flatList].map(x => (x[1]=='04' ? 'April' : 'October') + '<br>' + x[0]),
-        vals: storedConferences,
+        vals: vals,
         links: [...flatList].map(x => x.join('-')),
         link_callback: (thisLink) => {
             JSAlert.confirm('Want to inspect this conference?').then((result) => {
@@ -59,14 +64,38 @@ async function main() {
                 }
             });
         }
-    });
+    };
+    myGrapher.graph();
+}
+
+async function init() {
+    await fetchConfrences();
+    let confVals = await searchConfrences();
+    myGrapher = new MobileGrapher('myGraph', {}, false);
+    myGrapher.createGraphBody();
+    createGraph(confVals);
 
     // fill in found words if needed
     if (formData_formated.phraseToSearch.includes('*')) {
-        document.getElementById('foundWordsPanel').querySelector('.foundWordsTable').innerHTML =
-            Object.entries(AL.founds).sort((a, b) => b[1] - a[1])
-            .map(([key, val]) => `<row onclick="this.firstElementChild.click()"><input type="checkbox" checked><key>${key}</key><val>${val}</val></row>`).join('');
+        let listParent = document.getElementById('foundWordsPanel').querySelector('.foundWordsTable');
+        listParent.innerHTML = '';
+        Object.entries(AL.founds).sort((a, b) => b[1] - a[1]).forEach(([key, val], i) => {
+            listParent.innerHTML += `<row onclick="this.firstElementChild.click()"><input class="FoundWordscheckbox" id="chk-${i}" key="${key}" type="checkbox" checked><key>${key}</key><val>${val}</val></row>`;
+        });
+        listParent.childNodes.forEach(row => {
+            row.firstElementChild.addEventListener('click', async () => {
+                if (row.firstElementChild.checked) {
+                    AL.removeException(row.firstElementChild.getAttribute('key'));
+                    let confVals = await searchConfrences();
+                    createGraph(confVals);
+                } else {
+                    AL.addException(row.firstElementChild.getAttribute('key'));
+                    let confVals = await searchConfrences();
+                    createGraph(confVals);
+                }
+            });
+        })
         document.getElementById('foundWordsPanel').style.display = 'unset';
     }
 }
-main();
+init();

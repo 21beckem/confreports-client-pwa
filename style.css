@@ -372,6 +372,7 @@ iframe#appFrame {
     }
     #searchIcon {
         width: 25px;
+    }
     #searchInputParent #searchGrad {
         transform: translateY(-10px) scaleX(1.5);
     }
