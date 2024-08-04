@@ -65,7 +65,7 @@ async function main() {
     if (formData_formated.phraseToSearch.includes('*')) {
         document.getElementById('foundWordsPanel').querySelector('.foundWordsTable').innerHTML =
             Object.entries(AL.founds).sort((a, b) => b[1] - a[1])
-            .map(([key, val]) => `<key>${key}</key><val>${val}</val>`).join('');
+            .map(([key, val]) => `<row onclick="this.firstElementChild.click()"><input type="checkbox" checked><key>${key}</key><val>${val}</val></row>`).join('');
         document.getElementById('foundWordsPanel').style.display = 'unset';
     }
 }

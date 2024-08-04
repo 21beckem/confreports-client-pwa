@@ -19,11 +19,12 @@ html, body {
     left: calc(100% - 45px);
     bottom: 100px;
     width: 200px;
-    min-height: 180px;
+    min-height: 150px;
     border-radius: 8px 0 0 8px;
     background-color: var(--light-tone);
     box-shadow: 0px 0px 11px -5px black;
     padding: 10px;
+    padding-bottom: 30px;
     transition: 0.3s ease;
 }
 #foundWordsPanel.open {
@@ -42,13 +43,14 @@ html, body {
 #foundWordsPanel caret {
     position: absolute;
     left: 3px;
-    bottom: 0;
+    bottom: -20px;
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>');
     width: 30px;
     height: 30px;
     background-size: contain;
     background-repeat: no-repeat;
     filter: var(--filter-mid-tone);
+    z-index: 10;
     animation: bouceCaret 2s cubic-bezier(0.52, -0.02, 0.46, 0.98) infinite;
     transition: all 0.3s ease;
 }
@@ -71,17 +73,20 @@ html, body {
     transition: 0.3s ease;
     opacity: 0;
     width: calc(100% - 20px);
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
 }
 #foundWordsPanel.open .foundWordsTable {
     opacity: 1;
 }
+#foundWordsPanel .foundWordsTable row {
+    width: 100%;
+    display: flex;
+}
+#foundWordsPanel .foundWordsTable row:nth-child(2n) {
+    background-color: var(--very-light-tone);
+}
 #foundWordsPanel .foundWordsTable key {
     padding-right: 5px;
-    flex: 1 0 calc(100% - 45px);
+    flex: 1 0 calc(100% - 50px);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -91,6 +96,32 @@ html, body {
     padding-left: 5px;
     flex: 1 0 20px;
     text-align: center;
+}
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    font: inherit;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.1em solid gray;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+    pointer-events: none;
+    flex: none;
+}
+input[type="checkbox"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--dark-tone);
+    pointer-events: none;
+}
+input[type="checkbox"]:checked::before {
+    transform: scale(1) !important;
 }
     </style>
 </head>
@@ -104,10 +135,10 @@ html, body {
         </div>
     </div>
 
-    <div id="foundWordsPanel" style="display: none;" onclick="this.classList.toggle('open')">
+    <div id="foundWordsPanel" style="display: none;">
         <div style="position: relative; width: 100%; height: 100%; min-height: 180px;">
             <div class="title">Found Words</div>
-            <caret></caret>
+            <caret onclick="this.parentElement.parentElement.classList.toggle('open')"></caret>
             <div style="max-height: 450px; overflow-y: scroll; overflow-x: hidden;">
                 <div class="foundWordsTable"></div>
             </div>
