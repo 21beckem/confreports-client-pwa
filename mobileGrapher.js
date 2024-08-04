@@ -37,8 +37,6 @@ class MobileGrapher {
 
     graph() {
         // get infos and make things to paste
-        console.log(this.data);
-        
         let maxValue = Math.max(...this.data.vals);
         const {intervalSize, numberOfIntervals} = MobileGrapher.calculateIntervals(maxValue);
         let graphSquares = Array.from({length: numberOfIntervals}, (_, i) => '<div class="graphSquare"></div>').join('');
@@ -47,7 +45,7 @@ class MobileGrapher {
 
         // make topHeaderRow
         let topHeaderRow = Array.from({length: numberOfIntervals}, (_, i) => `<div class="graphSquareNum">${(i + 1) * intervalSize}</div>`).join('');
-        this.graphParentEl.querySelector('.topHeaderRow.graphRow').innerHTML = `<div class="leftTitle totalBox" style="background-color: var(--dark-tone); color: var(--light-tone);margin-top:-8px;"></div>` + topHeaderRow;
+        this.graphParentEl.querySelector('.topHeaderRow.graphRow').innerHTML = `<div class="leftTitle totalBox" style="background-color: var(--dark-tone); color: var(--very-light-tone);margin-top:-8px;"></div>` + topHeaderRow;
 
         // handle links from data
         let addLinks = this.data.hasOwnProperty('links');
@@ -65,7 +63,7 @@ class MobileGrapher {
             toOutput += `
                 <div class="graphRow">
                     <div class="leftTitle">${thisBar}</div>
-                    <div${link} class="bar" style="width: ${computedSize}px">${thisVal}&nbsp;</div>
+                    <div${link} class="bar" style="width: ${computedSize}px; background-size: ${contentWidth}px 100%;">${thisVal}&nbsp;</div>
                     ${graphSquares}
                 </div>`;
         }
