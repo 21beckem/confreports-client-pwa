@@ -82,7 +82,7 @@
     height: inherit;
     border-radius: 50%;
     transform: rotateX(70deg);
-    animation: 1s spin linear infinite;
+    animation: 1s mobileGrapher-spin linear infinite;
 }
 
 .mobileGrapher .loader:after {
@@ -111,7 +111,7 @@
     }
 }
 
-@keyframes spin {
+@keyframes mobileGrapher-spin {
 
     0%,
     100% {

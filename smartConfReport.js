@@ -1,13 +1,11 @@
-let pageToLoad = new URLSearchParams(window.location.search).get('page');
-let confTilesBox = document.getElementById('confTilesBox');
-let pageConfs = collectedConferences[pageToLoad];
+let pageConfs;
+const defaultConfImage = 'https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png';
 String.prototype.toTitleCase = function() {
     return this.replace(
         /\w\S*/g,
         text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
     );
 }
-const defaultTileImage = 'https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png';
 class DownloadWaiter {
     static awaiting = Array();
     static callback = function() {};
@@ -31,48 +29,51 @@ class DownloadWaiter {
     }
 }
 
-if (pageToLoad.includes('-full')) {
-    pageToLoad = pageToLoad.split('-full')[0];
-    DownloadWaiter.add(pageToLoad);
-    
-    // first grab that conference, then create the page
-    fetch('https://21beckem.github.io/conference-data/' + pageToLoad + '-full.json')
-        .then(res => res.json())
-        .then(res => {
-            // flatten sessions and put in same format as whole conf page
-            let talksList = [null];
-            let idCounter = 0;
-            for (let i=0; i < res.sessions.length; i++) {
-                const thisSession = res.sessions[i];
-                sessionName = thisSession.name.split('-');
-                sessionName.pop();
-                sessionName = sessionName.join(' ').toTitleCase();
-                let linkMonth = String(res.date[0]).length == 1 ? '0' + res.date[0] : res.date[0];
-                talksList.push({
-                    'id' : res.date.join('-'),
-                    'speaker' : 'General Conference',
-                    'title' : sessionName,
-                    'img' : defaultTileImage,
-                    'data' : {
-                        'talks' : thisSession.talks,
-                        'isSession' : true
-                    },
-                    'link' : `https://www.churchofjesuschrist.org/study/general-conference/${res.date[1]}/${linkMonth}/${thisSession.name}?lang=eng`
-                });
-                for (let j=0; j < thisSession.talks.length; j++) {
-                    const thisTalk = thisSession.talks[j];
-                    thisTalk.id = 'talkId_' + idCounter;
-                    thisTalk.data = thisTalk.talkText;
-                    talksList.push(thisTalk);
-                    idCounter++;
+function confPage_init() {
+    pageConfs = collectedConferences[pageToLoad];
+    if (pageToLoad.includes('-full')) {
+        pageToLoad = pageToLoad.split('-full')[0];
+        DownloadWaiter.add(pageToLoad);
+        
+        // first grab that conference, then create the page
+        fetch('https://21beckem.github.io/conference-data/' + pageToLoad + '-full.json')
+            .then(res => res.json())
+            .then(res => {
+                // flatten sessions and put in same format as whole conf page
+                let talksList = [null];
+                let idCounter = 0;
+                for (let i=0; i < res.sessions.length; i++) {
+                    const thisSession = res.sessions[i];
+                    sessionName = thisSession.name.split('-');
+                    sessionName.pop();
+                    sessionName = sessionName.join(' ').toTitleCase();
+                    let linkMonth = String(res.date[0]).length == 1 ? '0' + res.date[0] : res.date[0];
+                    talksList.push({
+                        'id' : res.date.join('-'),
+                        'speaker' : 'General Conference',
+                        'title' : sessionName,
+                        'img' : defaultConfImage,
+                        'data' : {
+                            'talks' : thisSession.talks,
+                            'isSession' : true
+                        },
+                        'link' : `https://www.churchofjesuschrist.org/study/general-conference/${res.date[1]}/${linkMonth}/${thisSession.name}?lang=eng`
+                    });
+                    for (let j=0; j < thisSession.talks.length; j++) {
+                        const thisTalk = thisSession.talks[j];
+                        thisTalk.id = 'talkId_' + idCounter;
+                        thisTalk.data = thisTalk.talkText;
+                        talksList.push(thisTalk);
+                        idCounter++;
+                    }
                 }
-            }
-            pageConfs = talksList;
-            DownloadWaiter.remove(pageToLoad);
-            createPageTiles();
-        })
-} else {
-    createConferencePage();
+                pageConfs = talksList;
+                DownloadWaiter.remove(pageToLoad);
+                createPageTiles();
+            })
+    } else {
+        createConferencePage();
+    }
 }
 
 function createConferencePage() {
@@ -132,12 +133,12 @@ function preloadImage(url, callback) {
 
 function createPageTiles(searchTerm = '') {
     // create loader instead of just clearing the box
-    confTilesBox.innerHTML = '<div class="loader"></div>';
+    TilesBox.innerHTML = '<div class="loader"></div>';
     let output = '';
     for (let i=1; i < pageConfs.length; i++) {
         let thisConf = pageConfs[i];
         let confId = thisConf;
-        let imgLink = defaultTileImage;
+        let imgLink = defaultConfImage;
         if (thisConf.id) {
             confId = thisConf.id;
             if (thisConf.data.thumbnail != '') {
@@ -156,7 +157,7 @@ function createPageTiles(searchTerm = '') {
         }
 
         // if this is actually just one talk, not a conference
-        let onclick = `"window.location.href = 'conf-smart-report.html?page=${confId}-full';"`;
+        let onclick = `"window.location.href = 'smart-report.html?page=${confId}-full';"`;
         let isTalk = '';
         if (thisConf.speaker) {
             isTalk = 'isTalk';
@@ -186,7 +187,7 @@ function createPageTiles(searchTerm = '') {
             const confPage = Object.keys(collectedConferences)[i];
             if (confPage != pageToLoad) {
                 output += `
-                <div id="page_${confPage}" class="tileBox" style="background-image: url(${collectedConferences[confPage][0]})" onclick="window.location.href = 'conf-smart-report.html?page=${confPage}';">
+                <div id="page_${confPage}" class="tileBox" style="background-image: url(${collectedConferences[confPage][0]})" onclick="window.location.href = 'smart-report.html?page=${confPage}';">
                     <div class="tileResults" style="opacity:0;">
                         <span>0</span>
                         <span>References</span>
@@ -198,37 +199,5 @@ function createPageTiles(searchTerm = '') {
             }
         }
     }
-    confTilesBox.innerHTML = output;
-}
-function openExternalLink(url) {
-    JSAlert.confirm('Open in Gospel Library?', '', 'https://www.churchofjesuschrist.org/imgs/0fd2691a8a019111765601085628ed5183d2c812/full/200%2C/0/default.webp')
-        .then((result) => {
-            if (result) {
-                window.open(url, '_blank');
-            }
-        });
-}
-
-var timeoutID;
-document.getElementById('searchInput').addEventListener('input', function() {
-    clearTimeout(timeoutID);
-    if (document.getElementById('searchInput').value == '') {
-        sessionStorage.setItem('lastSearchTerm', '');
-        createPageTiles();
-    } else {
-        timeoutID = setTimeout(searchConferences, 500);
-    }
-});
-if (sessionStorage.getItem('lastSearchTerm')) {
-    document.getElementById('searchInput').value = sessionStorage.getItem('lastSearchTerm');
-    setTimeout(function() {
-        DownloadWaiter.setCallback(searchConferences);
-    }, 100);
-}
-
-function searchConferences() {
-    let searchTerm = document.getElementById('searchInput').value;
-    searchTerm = searchTerm.trim();
-    sessionStorage.setItem('lastSearchTerm', searchTerm);
-    createPageTiles(searchTerm);
+    TilesBox.innerHTML = output;
 }

@@ -79,7 +79,8 @@ if (!firstTime) {
     <div id="headerBarSpacer"></div>
     <!-- End Header -->
 
-    <iframe id="appFrame" src="conf-home.html" frameborder="0"></iframe>
+    <iframe id="appFrame-conf" class="appFrame" src="home.html?pg=conf" frameborder="0"></iframe>
+    <iframe id="appFrame-mrmn" class="appFrame" src="home.html?pg=mrmn" frameborder="0" style="display: none;"></iframe>
 
     <!-- Begin Navbar -->
     <div id="navBarSpacer"></div>
@@ -107,9 +108,11 @@ function openTab(tab) {
     document.getElementById('confTabBtn').classList.remove('active');
     document.getElementById(tab + 'TabBtn').classList.add('active');
     if (tab == 'conf') {
-        document.getElementById('appFrame').src = 'conf-home.html';
+        document.getElementById('appFrame-conf').style.display = 'unset';
+        document.getElementById('appFrame-mrmn').style.display = 'none';
     } else {
-        document.getElementById('appFrame').src = 'bom-home.html';
+        document.getElementById('appFrame-conf').style.display = 'none';
+        document.getElementById('appFrame-mrmn').style.display = 'unset';
     }
 }
     </script>

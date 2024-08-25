@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="//use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <link rel="stylesheet" href="fonts/Electrum-Exp/Electrum-Exp.css">
+    <script src="https://21beckem.github.io/conference-data/collected-conferences.js"></script>
+    <script src="https://21beckem.github.io/book-of-mormon-data/book_list.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="jsalert.js"></script>
+</head>
+<body>
+    <div id="headerBarSpacer"></div>
+    <div id="headerBarExtraSpacer"></div>
+    <div id="tilePageParent">
+
+        <div id="searchInputParent">
+            <div id="searchGrad"></div>
+            <input id="searchInput" type="text" width="100%" value="">
+            <div id="searchIcon"></div>
+        </div>
+        <div id="TilesBox" class="tileBoxesContainer"></div>
+
+    </div>
+    <div id="navBarSpacer"></div>
+    <script src="searchAlgorithm.js"></script>
+    <script src="smartConfReport.js"></script>
+    <script src="smartMrmnReport.js"></script>
+    <script>
+let pageToLoad = new URLSearchParams(window.location.search).get('page');
+const TilesBox = document.getElementById('TilesBox');
+const pg = sessionStorage.getItem('pg');
+if (pg == 'conf') {
+    confPage_init();
+} else {
+    mrmnPage_init();
+}
+function openExternalLink(url) {
+    JSAlert.confirm('Open in Gospel Library?', '', 'https://www.churchofjesuschrist.org/imgs/0fd2691a8a019111765601085628ed5183d2c812/full/200%2C/0/default.webp')
+        .then((result) => {
+            if (result) {
+                window.open(url, '_blank');
+            }
+        });
+}
+function doSearch() {
+    let searchTerm = document.getElementById('searchInput').value;
+    searchTerm = searchTerm.trim();
+    sessionStorage.setItem('lastSearchTerm', searchTerm);
+    document.getElementById('searchInput').value = searchTerm;
+    if (pg == 'conf') {
+        createPageTiles(searchTerm);
+    } else {
+        mrmnPage_init(searchTerm);
+    }
+}
+var timeoutID;
+document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(timeoutID);
+    if (document.getElementById('searchInput').value == '') {
+        sessionStorage.setItem('lastSearchTerm', '');
+        createPageTiles();
+    } else {
+        timeoutID = setTimeout(doSearch, 500);
+    }
+});
+if (sessionStorage.getItem('lastSearchTerm')) {
+    document.getElementById('searchInput').value = sessionStorage.getItem('lastSearchTerm');
+    setTimeout(function() {
+        DownloadWaiter.setCallback(doSearch);
+    }, 100);
+}
+    </script>
+</body>
+</html>

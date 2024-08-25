@@ -25,14 +25,17 @@ class searchAlgorithm {
         });
         return totalAllowedFound;
     };
-
-    searchConfrence(searchTerm, confData) {
-        let runningTotal = 0;
+    static createRegexForSearch(searchTerm) {
         searchTerm = searchTerm.trim().toLowerCase(); // trim and convert to lower case
         searchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // excape chars that will confuse regex
         searchTerm = searchTerm.replace('\\*', '\\w*'); // add the wildcard from the *
         searchTerm = "\\b" + searchTerm + "\\b"; // add boundaries at beginning and end
-        let regex = new RegExp(searchTerm, "g"); // create the regex
+        return new RegExp(searchTerm, "g"); // create the regex
+    }
+
+    searchConfrence(searchTerm, confData) {
+        let runningTotal = 0;
+        let regex = searchAlgorithm.createRegexForSearch(searchTerm);
         if (!confData.sessions) {
             if (confData.isSession) {
                 // if given just 1 session, turn it into a conference with just 1 session

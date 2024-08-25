@@ -12,7 +12,7 @@
 
     <div class="centerBigBoxesContainer">
 
-        <a href="conf-smart-report.html?page=main"><div class="centerBigBox" style="background-color: var(--mid-tone); background-image: url('https://assets.ldscdn.org/d7/6f/d76f500a35511328375e7c670e13189f7cbea509/conference_center.jpeg');">
+        <a href="smart-report.html?page=main"><div id="smartReportBtn" class="centerBigBox" style="background-color: var(--mid-tone);">
             <div style="height: 110px;">
                 
             </div>
@@ -34,5 +34,19 @@
 
 
     <div id="navBarSpacer"></div>
+    <script>
+let pg = new URLSearchParams(window.location.search).get('pg') || null;
+if (pg) {
+    sessionStorage.setItem('pg', pg);
+} else {
+    pg = sessionStorage.getItem('pg');
+}
+if (pg == 'conf') {
+    smartReportBtn.style.backgroundImage = `url('https://assets.ldscdn.org/d7/6f/d76f500a35511328375e7c670e13189f7cbea509/conference_center.jpeg')`;
+} else {
+    smartReportBtn.style.backgroundImage = `url('img/BoM+Bible.svg')`;
+}
+
+    </script>
 </body>
 </html>
