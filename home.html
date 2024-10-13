@@ -6,47 +6,83 @@
     <link rel="stylesheet" href="fonts/Electrum-Exp/Electrum-Exp.css">
     <link rel="stylesheet" href="style.css">
 </head>
+<style>
+#headerBarSpacer {
+    height: 115px;
+}
+#TilesBox {
+    flex-direction: column;
+}
+.tileResults {
+    height: 190px;
+}
+.tileBottom {
+    height: 50px;
+}
+.tileBottom span {
+    font-size: 22px;
+}
+@media screen and (min-width: 800px) {
+    #TilesBox {
+        flex-direction: unset;
+    }
+    .tileBox {
+        flex-basis: calc(50% - 46px);
+    }
+}
+</style>
 <body>
     <div id="headerBarSpacer"></div>
 
+    <div id="tilePageParent">  
+        <div id="TilesBox" class="tileBoxesContainer">
 
-    <div id="TilesBox" class="tileBoxesContainer">
-        <div id="tile_2024-10" class="tileBox " style="background-image: url(https://www.churchofjesuschrist.org/imgs/3084da5ff78811ee8069eeeeac1e31ec4f04a6a8/full/320%2C/0/default);" onclick="window.location.href = 'smart-report.html?pg=conf&page=main';">
-            <div class="tileResults" style="opacity:0;">
-                <span>0</span>
-                <span>References</span>
+            <div id="tile_2024-10" class="tileBox " style="background-image: url(https://www.churchofjesuschrist.org/imgs/3084da5ff78811ee8069eeeeac1e31ec4f04a6a8/full/320%2C/0/default);" onclick="window.location.href = 'smart-report.html?pg=conf&page=main';">
+                <div class="tileResults" style="opacity:0;">
+                    <span>0</span>
+                    <span>References</span>
+                </div>
+                <div class="tileBottom">
+                    <span>Confrerence</span>
+                </div>
             </div>
-            <div class="tileBottom">
-                <span>Confrerences</span>
+            <div id="tile_2024-10" class="tileBox " style="background-image: url(img/bar-graph.svg); background-color: var(--dark-tone);" onclick="window.location.href = 'conf-graph.html';">
+                <div class="tileResults" style="opacity:0;">
+                    <span>0</span>
+                    <span>References</span>
+                </div>
+                <div class="tileBottom">
+                    <span>Conference Grapher</span>
+                </div>
             </div>
-        </div>
-        <div id="tile_2024-10" class="tileBox " style="background-image: url(https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png);" onclick="window.location.href = 'conf-graph.html';">
-            <div class="tileResults" style="opacity:0;">
-                <span>0</span>
-                <span>References</span>
+            <div id="tile_2024-10" class="tileBox " style="background-image: url(img/BoM+Bible.svg); background-color: var(--dark-tone);" onclick="window.location.href = 'smart-report.html?pg=mrmn&page=main';">
+                <div class="tileResults" style="opacity:0;">
+                    <span>0</span>
+                    <span>References</span>
+                </div>
+                <div class="tileBottom">
+                    <span>Book of Mormon</span>
+                </div>
             </div>
-            <div class="tileBottom">
-                <span>Conference Grapher</span>
+            <div id="tile_2024-10" class="tileBox " style="background-image: url(https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png);" onclick="window.location.href = 'mrmn-graph.html';">
+                <div class="tileResults" style="opacity:0;">
+                    <span>0</span>
+                    <span>References</span>
+                </div>
+                <div class="tileBottom">
+                    <span>Book of Mormon Grapher</span>
+                </div>
             </div>
-        </div>
-        <div id="tile_2024-10" class="tileBox " style="background-image: url(https://www.churchofjesuschrist.org/imgs/a0a9b700fbd9bdd58c245a164d9cdbcdc8b31c8d/full/320%2C/0/default);" onclick="window.location.href = 'smart-report.html?pg=mrmn&page=main';">
-            <div class="tileResults" style="opacity:0;">
-                <span>0</span>
-                <span>References</span>
+            <div id="tile_2024-10" class="tileBox " style="background-image: url(https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png);" onclick="window.location.href = '';">
+                <div class="tileResults" style="opacity:0;">
+                    <span>0</span>
+                    <span>References</span>
+                </div>
+                <div class="tileBottom">
+                    <span>About Conf-Reports</span>
+                </div>
             </div>
-            <div class="tileBottom">
-                <span>Book of Mormon</span>
-            </div>
-        </div>
-        
-        <div id="tile_2024-10" class="tileBox " style="background-image: url(https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png);" onclick="window.location.href = 'smart-report.html?page=2024-10-full';">
-            <div class="tileResults" style="opacity:0;">
-                <span>0</span>
-                <span>References</span>
-            </div>
-            <div class="tileBottom">
-                <span>Book of Mormon Grapher</span>
-            </div>
+
         </div>
     </div>
 </body>

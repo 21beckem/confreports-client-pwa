@@ -60,7 +60,7 @@ function createGraph(vals) {
             JSAlert.confirm('Want to inspect this conference?').then((result) => {
                 if (result) {
                     sessionStorage.setItem('lastSearchTerm', formData_formated.phraseToSearch);
-                    window.location.href = `conf-smart-report.html?page=${thisLink}-full`;
+                    window.location.href = `smart-report.html?pg=conf&page=${thisLink}-full`;
                 }
             });
         }

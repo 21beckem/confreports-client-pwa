@@ -58,6 +58,23 @@
     0% { opacity: 0; transform: translateY(0px); }
     100% { opacity: 0.7; transform: translateY(140px); }
 }
+#sidebars {
+    position: fixed;
+    z-index: 9999999999;
+    top: 120px;
+    left: 5px;
+    width: calc(100% - 15px);
+    height: calc(100% - 153px);
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    border-right: 2px solid var(--mid-tone);
+    border-left:  2px solid var(--mid-tone);
+}
+@media screen and (min-width: 800px) {
+    #sidebars { display: none; }
+}
     </style>
 </head>
 <body>
@@ -78,6 +95,8 @@ if (!firstTime) {
     </div>
     <div id="headerBarSpacer"></div>
     <!-- End Header -->
+
+    <div id="sidebars"></div>
 
     <iframe id="appFrame-conf" class="appFrame" src="home.html" frameborder="0"></iframe>
     
