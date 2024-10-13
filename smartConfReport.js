@@ -157,7 +157,7 @@ function createPageTiles(searchTerm = '') {
         }
 
         // if this is actually just one talk, not a conference
-        let onclick = `"window.location.href = 'smart-report.html?page=${confId}-full';"`;
+        let onclick = `"window.location.href = 'smart-report.html?pg=conf&page=${confId}-full';"`;
         let isTalk = '';
         if (thisConf.speaker) {
             isTalk = 'isTalk';
@@ -187,7 +187,7 @@ function createPageTiles(searchTerm = '') {
             const confPage = Object.keys(collectedConferences)[i];
             if (confPage != pageToLoad) {
                 output += `
-                <div id="page_${confPage}" class="tileBox" style="background-image: url(${collectedConferences[confPage][0]})" onclick="window.location.href = 'smart-report.html?page=${confPage}';">
+                <div id="page_${confPage}" class="tileBox" style="background-image: url(${collectedConferences[confPage][0]})" onclick="window.location.href = 'smart-report.html?pg=conf&page=${confPage}';">
                     <div class="tileResults" style="opacity:0;">
                         <span>0</span>
                         <span>References</span>

@@ -97,7 +97,7 @@ iframe.appFrame {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 50px;
+    height: 20px;
     background: linear-gradient(to top, var(--light-tone), transparent);
     z-index: 2;
 }
@@ -200,7 +200,7 @@ iframe.appFrame {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height: calc(100vh - 210px);
+    height: calc(100vh - 150px);
 }
 .centerBigBox {
     flex: 1;
@@ -230,6 +230,7 @@ iframe.appFrame {
     display: relative;
     overflow: hidden;
     cursor: pointer;
+    user-select: none;
 }
 .tileResults {
     width: 100%;

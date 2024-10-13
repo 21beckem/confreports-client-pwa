@@ -10,43 +10,44 @@
     <div id="headerBarSpacer"></div>
 
 
-    <div class="centerBigBoxesContainer">
-
-        <a href="smart-report.html?page=main"><div id="smartReportBtn" class="centerBigBox" style="background-color: var(--mid-tone);">
-            <div style="height: 110px;">
-                
+    <div id="TilesBox" class="tileBoxesContainer">
+        <div id="tile_2024-10" class="tileBox " style="background-image: url(https://www.churchofjesuschrist.org/imgs/3084da5ff78811ee8069eeeeac1e31ec4f04a6a8/full/320%2C/0/default);" onclick="window.location.href = 'smart-report.html?pg=conf&page=main';">
+            <div class="tileResults" style="opacity:0;">
+                <span>0</span>
+                <span>References</span>
             </div>
-            <div class="tileBottom" style="font-size: 30px; height: 70px;">
-                <span>Smart Report</span>
+            <div class="tileBottom">
+                <span>Confrerences</span>
             </div>
-        </div></a>
-
-        <a href="conf-graph.html"><div class="centerBigBox" style="background-color: var(--mid-tone); background-image: url('img/bar-graph.svg');">
-            <div style="height: 110px;">
-                
+        </div>
+        <div id="tile_2024-10" class="tileBox " style="background-image: url(https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png);" onclick="window.location.href = 'conf-graph.html';">
+            <div class="tileResults" style="opacity:0;">
+                <span>0</span>
+                <span>References</span>
             </div>
-            <div class="tileBottom" style="font-size: 30px; height: 70px;">
-                <span>Graph It</span>
+            <div class="tileBottom">
+                <span>Conference Grapher</span>
             </div>
-        </div></a>
-
+        </div>
+        <div id="tile_2024-10" class="tileBox " style="background-image: url(https://www.churchofjesuschrist.org/imgs/a0a9b700fbd9bdd58c245a164d9cdbcdc8b31c8d/full/320%2C/0/default);" onclick="window.location.href = 'smart-report.html?pg=mrmn&page=main';">
+            <div class="tileResults" style="opacity:0;">
+                <span>0</span>
+                <span>References</span>
+            </div>
+            <div class="tileBottom">
+                <span>Book of Mormon</span>
+            </div>
+        </div>
+        
+        <div id="tile_2024-10" class="tileBox " style="background-image: url(https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png);" onclick="window.location.href = 'smart-report.html?page=2024-10-full';">
+            <div class="tileResults" style="opacity:0;">
+                <span>0</span>
+                <span>References</span>
+            </div>
+            <div class="tileBottom">
+                <span>Book of Mormon Grapher</span>
+            </div>
+        </div>
     </div>
-
-
-    <div id="navBarSpacer"></div>
-    <script>
-let pg = new URLSearchParams(window.location.search).get('pg') || null;
-if (pg) {
-    sessionStorage.setItem('pg', pg);
-} else {
-    pg = sessionStorage.getItem('pg');
-}
-if (pg == 'conf') {
-    smartReportBtn.style.backgroundImage = `url('https://assets.ldscdn.org/d7/6f/d76f500a35511328375e7c670e13189f7cbea509/conference_center.jpeg')`;
-} else {
-    smartReportBtn.style.backgroundImage = `url('img/BoM+Bible.svg')`;
-}
-
-    </script>
 </body>
 </html>

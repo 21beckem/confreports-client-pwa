@@ -30,7 +30,7 @@
     <script>
 let pageToLoad = new URLSearchParams(window.location.search).get('page');
 const TilesBox = document.getElementById('TilesBox');
-const pg = sessionStorage.getItem('pg');
+const pg = new URLSearchParams(window.location.search).get('pg') || 'conf';
 if (pg == 'conf') {
     confPage_init();
 } else {

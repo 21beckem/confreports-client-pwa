@@ -74,17 +74,16 @@ if (!firstTime) {
 }
     </script>
     <div id="headerBar">
-        <div class="title">Conf-Reports</div>
+        <div class="title" onclick="window.frames[0].location.href = 'home.html';">Conf-Reports</div>
     </div>
     <div id="headerBarSpacer"></div>
     <!-- End Header -->
 
-    <iframe id="appFrame-conf" class="appFrame" src="home.html?pg=conf" frameborder="0"></iframe>
-    <iframe id="appFrame-mrmn" class="appFrame" src="home.html?pg=mrmn" frameborder="0" style="display: none;"></iframe>
-
+    <iframe id="appFrame-conf" class="appFrame" src="home.html" frameborder="0"></iframe>
+    
     <!-- Begin Navbar -->
-    <div id="navBarSpacer"></div>
-    <div id="navBar">
+    <div id="navBarSpacer" style="display: none;"></div>
+    <div id="navBar" style="display: none;">
         <div id="confTabBtn" class="navBtn active" onclick="openTab('conf')">
             <span>Conferences</span>
             <div class="navImg" style="background-image: url('img/conf-icon.png')" alt=""></div>

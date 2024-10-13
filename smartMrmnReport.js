@@ -32,7 +32,7 @@ async function createMainPage(searchTerm = '') {
             resultsOpacity = 1;
         }
         output += `
-<div id="tile_${bok.replace(' ', '_')}" class="tileBox " style="background-image: url(${defaultMnmnImage});" onclick="window.location.href = 'smart-report.html?page=book_${bok}';">
+<div id="tile_${bok.replace(' ', '_')}" class="tileBox " style="background-image: url(${defaultMnmnImage});" onclick="window.location.href = 'smart-report.html?pg=mrmn&page=book_${bok}';">
     <div class="tileResults" style="opacity:${resultsOpacity};">
         <span>${founds}</span>
         <span>References</span>
@@ -59,7 +59,7 @@ async function createBookTiles(searchTerm = '') {
     for (let i = 0; i < bokData.chapters.length; i++) {
         let chapter = bokData.chapters[String(i+1)];
         output += `
-    <div id="tile_${bok.replace(' ', '_')}" class="tileBox " style="background-image: url(${defaultMnmnImage});" onclick="window.location.href = 'smart-report.html?page=book_${bok}';">
+    <div id="tile_${bok.replace(' ', '_')}" class="tileBox " style="background-image: url(${defaultMnmnImage});" onclick="window.location.href = 'smart-report.html?pg=mrmn&page=book_${bok}';">
         <div class="tileResults" style="opacity:0;">
             <span>0</span>
             <span>References</span>
