@@ -47,6 +47,7 @@ iframe.appFrame {
 #headerBar .title {
     font-size: 2.5em;
     font-weight: bolder;
+    cursor: pointer;
     filter: drop-shadow(3px 3px 0 var(--mid-tone));
 }
 #headerBarSpacer { height: 115px; width: 100%; }
@@ -454,6 +455,6 @@ iframe.appFrame {
         width: 25px;
     }
     #searchInputParent #searchGrad {
-        transform: translateY(-10px) scaleX(1.5);
+        transform: translateY(-13px) scaleX(1.5);
     }
 }

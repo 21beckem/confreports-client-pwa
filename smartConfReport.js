@@ -11,6 +11,7 @@ class DownloadWaiter {
     static callback = function() {};
     static alreadyCompleted = false;
     static setCallback(newCallback) {
+        console.log('new callback: ' + newCallback);
         this.callback = newCallback;
         if (this.alreadyCompleted) {
             this.callback();
@@ -25,6 +26,7 @@ class DownloadWaiter {
         if (this.awaiting.length == 0) {
             this.alreadyCompleted = true;
             this.callback();
+            console.log('callbackCalled');
         }
     }
 }
@@ -79,6 +81,7 @@ function confPage_init() {
 function createConferencePage() {
     // create the tiles for this page
     createPageTiles();
+    
 
     
     // start fetching each one of those conference data jsons
@@ -132,6 +135,7 @@ function preloadImage(url, callback) {
 }
 
 function createPageTiles(searchTerm = '') {
+    
     // create loader instead of just clearing the box
     TilesBox.innerHTML = '<div class="loader"></div>';
     let output = '';
