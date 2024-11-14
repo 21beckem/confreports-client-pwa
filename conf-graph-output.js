@@ -57,7 +57,7 @@ function createGraph(vals) {
         vals: vals,
         links: [...flatList].map(x => x.join('-')),
         link_callback: (thisLink) => {
-            JSAlert.confirm('Want to inspect this conference?').then((result) => {
+            JSAlert.confirm('Do you want to inspect this conference?').then((result) => {
                 if (result) {
                     sessionStorage.setItem('lastSearchTerm', formData_formated.phraseToSearch);
                     window.location.href = `smart-report.html?pg=conf&page=${thisLink}-full`;

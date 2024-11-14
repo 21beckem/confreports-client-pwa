@@ -8,10 +8,9 @@ String.prototype.toTitleCase = function() {
 }
 class DownloadWaiter {
     static awaiting = Array();
-    static callback = function() {};
+    static callback = function() { console.warn('DownloadWaiter: Undefined callback has been called.'); };
     static alreadyCompleted = false;
     static setCallback(newCallback) {
-        console.log('new callback: ' + newCallback);
         this.callback = newCallback;
         if (this.alreadyCompleted) {
             this.callback();
@@ -26,14 +25,16 @@ class DownloadWaiter {
         if (this.awaiting.length == 0) {
             this.alreadyCompleted = true;
             this.callback();
-            console.log('callbackCalled');
         }
     }
 }
 
 function confPage_init() {
+    // set download watiter callback to refresh th page once everything loaded
+    DownloadWaiter.setCallback(() => { createPageTiles(); });
+
     pageConfs = collectedConferences[pageToLoad];
-    if (pageToLoad.includes('-full')) {
+    if (pageToLoad.includes('-full')) { // if this is an individual conference, not a list of conferences
         pageToLoad = pageToLoad.split('-full')[0];
         DownloadWaiter.add(pageToLoad);
         
@@ -65,12 +66,14 @@ function confPage_init() {
                         const thisTalk = thisSession.talks[j];
                         thisTalk.id = 'talkId_' + idCounter;
                         thisTalk.data = thisTalk.talkText;
+                        thisTalk.img = 'https://www.churchofjesuschrist.org/imgs/' + thisTalk.img.split('/').splice(-2,1)[0] + '/full/600%2C/0/default';;
                         talksList.push(thisTalk);
                         idCounter++;
                     }
                 }
                 pageConfs = talksList;
                 DownloadWaiter.remove(pageToLoad);
+                console.log('pageConfs', JSON.parse(JSON.stringify(pageConfs)));
                 createPageTiles();
             })
     } else {
@@ -93,14 +96,9 @@ function createConferencePage() {
             .then(res => {
                 pageConfs[i] = {
                     'id' : pageConfs[i],
-                    'data' : res
+                    'data' : res,
                 }
                 DownloadWaiter.remove(thisConfId);
-                // preload the thumbnail for that tile
-                preloadImage(pageConfs[i].data.thumbnail, () => {
-                    // update the image for that tile
-                    document.getElementById('tile_' + pageConfs[i].id).style.backgroundImage = `url(${pageConfs[i].data.thumbnail})`;
-                })
             })
     }
     
@@ -135,7 +133,6 @@ function preloadImage(url, callback) {
 }
 
 function createPageTiles(searchTerm = '') {
-    
     // create loader instead of just clearing the box
     TilesBox.innerHTML = '<div class="loader"></div>';
     let output = '';
@@ -143,6 +140,7 @@ function createPageTiles(searchTerm = '') {
         let thisConf = pageConfs[i];
         let confId = thisConf;
         let imgLink = defaultConfImage;
+        // console.log('thisConf', thisConf);
         if (thisConf.id) {
             confId = thisConf.id;
             if (thisConf.data.thumbnail != '') {
