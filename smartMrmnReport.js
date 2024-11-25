@@ -52,12 +52,21 @@ async function createBookTiles(searchTerm = '') {
     // await fetch the book
     let res = await fetch(`https://21beckem.github.io/book-of-mormon-data/MB/${bok}.json`);
     let bokData = await res.json();
-    console.log(bokData);
+    console.log(JSON.parse(JSON.stringify(bokData)));
     
 
     // create tiles for each chapter
-    for (let i = 0; i < bokData.chapters.length; i++) {
-        let chapter = bokData.chapters[String(i+1)];
+    for (let i = 0; i < bokData.chapters; i++) {
+        chapNum = String(i+1);
+        let chapter = bokData[chapNum];
+
+        // // if searching, do the search       // for searching each chapter, directly copied from smartConfReport.js
+        // if (searchTerm != '') {
+        //     resultsOpacity = 1;
+        //     let AL = new searchAlgorithm();
+        //     resultsNumber = AL.searchConfrence(searchTerm, thisConf.data);
+        // }
+
         output += `
     <div id="tile_${bok.replace(' ', '_')}" class="tileBox " style="background-image: url(${defaultMnmnImage});" onclick="window.location.href = 'smart-report.html?pg=mrmn&page=book_${bok}';">
         <div class="tileResults" style="opacity:0;">
@@ -65,7 +74,7 @@ async function createBookTiles(searchTerm = '') {
             <span>References</span>
         </div>
         <div class="tileBottom">
-            <span>${bok}</span>
+            <span>${bok + ' ' + chapNum}</span>
         </div>
     </div>`;
     }
