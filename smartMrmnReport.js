@@ -1,11 +1,47 @@
 const defaultMnmnImage = 'https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png';
 function mrmnPage_init(searchTerm = '') {
+    TilesBox.innerHTML += '<div class="overLoader-dimmer"></div><div class="overLoader"><div class="loader"></div></div>';
+    let pageToLoadData = [];
     if (pageToLoad == 'main') {
-        createMainPage(searchTerm);
+        for (const bok of BookOfMormon.books_list) {
+            let founds = 0;
+            let resultsOpacity = 0;
+            if (searchTerm != '') {
+                let AL = new searchAlgorithm();
+                founds = AL.searchText(searchTerm, flattenChapters(BookOfMormon.books[bok]));
+                resultsOpacity = 1;
+            }
+            pageToLoadData.push({
+                'title': bok,
+                'founds': 0,
+                'resultsOpacity': resultsOpacity,
+                'onclick': `window.location.href = 'smart-report.html?pg=mrmn&page=book_${bok}';`
+            });
+        }
     }
     else if (pageToLoad.includes('book_')) {
-        createBookTiles(searchTerm);
+        let thisBok = pageToLoad.split('book_')[1];
+        console.log(BookOfMormon.books[thisBok]);
+        
+        for (let i = 0; i < BookOfMormon.books[thisBok].chapters; i++) {
+            let chapNum = String(i + 1);
+            let chapter = BookOfMormon.books[thisBok][chapNum];
+            let founds = 0;
+            let resultsOpacity = 0;
+            if (searchTerm != '') {
+                let AL = new searchAlgorithm();
+                founds = AL.searchText(searchTerm, chapter,join('\n'));
+                resultsOpacity = 1;
+            }
+            pageToLoadData.push({
+                'title': thisBok + ' ' + chapNum,
+                'founds': 0,
+                'resultsOpacity': resultsOpacity,
+                'onclick': `alert('opening in GL');`
+            });
+        }
     }
+    createPageTilesFromData(pageToLoadData);
 }
 function flattenChapters(bok) {
     let output = '';
@@ -15,30 +51,17 @@ function flattenChapters(bok) {
     return output;
 }
 
-async function createMainPage(searchTerm = '') {
-    TilesBox.innerHTML += '<div class="overLoader-dimmer"></div><div class="overLoader"><div class="loader"></div></div>';
+async function createPageTilesFromData(tilesArr) {
     let output = '';
-    for (const bok of book_list) {
-        let resultsOpacity = 0;
-        let founds = 0;
-        if (searchTerm != '') {
-            // fetch the book
-            let res = await fetch(`https://21beckem.github.io/book-of-mormon-data/MB/${bok}.json`);
-            let bokData = await res.json();
-
-            // search algorithm
-            let AL = new searchAlgorithm();
-            founds = AL.searchText(searchTerm, flattenChapters(bokData));
-            resultsOpacity = 1;
-        }
+    for (const tile of tilesArr) {
         output += `
-<div id="tile_${bok.replace(' ', '_')}" class="tileBox " style="background-image: url(${defaultMnmnImage});" onclick="window.location.href = 'smart-report.html?pg=mrmn&page=book_${bok}';">
-    <div class="tileResults" style="opacity:${resultsOpacity};">
-        <span>${founds}</span>
+<div id="tile_${tile.title.replace(' ', '_')}" class="tileBox " style="background-image: url(${defaultMnmnImage});" onclick="${tile.onclick}">
+    <div class="tileResults" style="opacity:${tile.resultsOpacity};">
+        <span>${tile.founds}</span>
         <span>References</span>
     </div>
     <div class="tileBottom">
-        <span>${bok}</span>
+        <span>${tile.title}</span>
     </div>
 </div>`;
     }
