@@ -28,6 +28,28 @@
     <script src="smartConfReport.js"></script>
     <script src="smartMrmnReport.js"></script>
     <script>
+class DownloadWaiter {
+    static awaiting = Array();
+    static callback = function() { console.warn('DownloadWaiter: Undefined callback has been called.'); };
+    static alreadyCompleted = false;
+    static setCallback(newCallback) {
+        this.callback = newCallback;
+        if (this.alreadyCompleted) {
+            this.callback();
+        }
+    }
+    static add(toDownload) {
+        this.awaiting.push(toDownload);
+    }
+    static remove(toRemove) {
+        if (this.awaiting.length == 0) { return; }
+        this.awaiting.splice(this.awaiting.indexOf(toRemove), 1);
+        if (this.awaiting.length == 0) {
+            this.alreadyCompleted = true;
+            this.callback();
+        }
+    }
+}
 let pageToLoad = new URLSearchParams(window.location.search).get('page');
 const TilesBox = document.getElementById('TilesBox');
 const pg = new URLSearchParams(window.location.search).get('pg') || 'conf';
@@ -60,7 +82,11 @@ document.getElementById('searchInput').addEventListener('input', function() {
     clearTimeout(timeoutID);
     if (document.getElementById('searchInput').value == '') {
         sessionStorage.setItem('lastSearchTerm', '');
-        createPageTiles();
+        if (pg == 'conf') {
+            createPageTiles('');
+        } else {
+            mrmnPage_init('');
+        }
     } else {
         timeoutID = setTimeout(doSearch, 500);
     }

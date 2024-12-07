@@ -90,8 +90,9 @@ if (!firstTime) {
     `);
 }
     </script>
-    <div id="headerBar">
+    <div id="headerBar" class="">
         <div class="title" onclick="window.frames[0].location.href = 'home.html';">Conf-Reports</div>
+        <div id="page_subTitle" class="subTitle">Conference</div>
     </div>
     <div id="headerBarSpacer"></div>
     <!-- End Header -->
@@ -131,6 +132,14 @@ function openTab(tab) {
     } else {
         document.getElementById('appFrame-conf').style.display = 'none';
         document.getElementById('appFrame-mrmn').style.display = 'unset';
+    }
+}
+function setSubTitle(title) {
+    document.getElementById('page_subTitle').innerHTML = title;
+    if (title == '') {
+        document.getElementById('headerBar').classList.remove('cornered');
+    } else {
+        document.getElementById('headerBar').classList.add('cornered');
     }
 }
     </script>

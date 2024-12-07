@@ -60,4 +60,9 @@ class searchAlgorithm {
         let theseFounds = ( textBody.toLowerCase().match(regex) || [] );
         return this.filterFounds(theseFounds);
     }
+
+    searchTextRaw(term, textBody) {
+        let theseFounds = ( textBody.match(new RegExp(term, "gi")) || [] );
+        return theseFounds.length;
+    }
 }

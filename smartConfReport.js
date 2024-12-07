@@ -1,32 +1,11 @@
 let pageConfs;
 const defaultConfImage = 'https://content.churchofjesuschrist.org/language-pages/bc/GLO/Default.png';
+const MaxIMGsize = 600;
 String.prototype.toTitleCase = function() {
     return this.replace(
         /\w\S*/g,
         text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
     );
-}
-class DownloadWaiter {
-    static awaiting = Array();
-    static callback = function() { console.warn('DownloadWaiter: Undefined callback has been called.'); };
-    static alreadyCompleted = false;
-    static setCallback(newCallback) {
-        this.callback = newCallback;
-        if (this.alreadyCompleted) {
-            this.callback();
-        }
-    }
-    static add(toDownload) {
-        this.awaiting.push(toDownload);
-    }
-    static remove(toRemove) {
-        if (this.awaiting.length == 0) { return; }
-        this.awaiting.splice(this.awaiting.indexOf(toRemove), 1);
-        if (this.awaiting.length == 0) {
-            this.alreadyCompleted = true;
-            this.callback();
-        }
-    }
 }
 
 function confPage_init() {
@@ -37,6 +16,9 @@ function confPage_init() {
     if (pageToLoad.includes('-full')) { // if this is an individual conference, not a list of conferences
         pageToLoad = pageToLoad.split('-full')[0];
         DownloadWaiter.add(pageToLoad);
+        let thisDate = pageToLoad.split('-');
+        thisDate = (thisDate[1].includes('10') ? 'Oct' : 'Apr') + ' ' + thisDate[0];
+        window.parent.setSubTitle('Conference | ' + thisDate);
         
         // first grab that conference, then create the page
         fetch('https://21beckem.github.io/conference-data/' + pageToLoad + '-full.json')
@@ -66,14 +48,16 @@ function confPage_init() {
                         const thisTalk = thisSession.talks[j];
                         thisTalk.id = 'talkId_' + idCounter;
                         thisTalk.data = thisTalk.talkText;
-                        thisTalk.img = 'https://www.churchofjesuschrist.org/imgs/' + thisTalk.img.split('/').splice(-2,1)[0] + '/full/600%2C/0/default';;
+                        thisTalk.img = thisTalk.img.includes('/0/default') ?
+                            thisTalk.img.replace(/\/full\/.*\/0\/default/g, '/full/!' + MaxIMGsize + '%2C/0/default')
+                                :
+                            'https://www.churchofjesuschrist.org/imgs/' + thisTalk.img.split('/').splice(-2,1)[0] + '/full/!' + MaxIMGsize + '%2C/0/default';;
                         talksList.push(thisTalk);
                         idCounter++;
                     }
                 }
                 pageConfs = talksList;
                 DownloadWaiter.remove(pageToLoad);
-                console.log('pageConfs', JSON.parse(JSON.stringify(pageConfs)));
                 createPageTiles();
             })
     } else {
@@ -112,6 +96,10 @@ function createConferencePage() {
                 });
             }
         }
+        window.parent.setSubTitle('Conference');
+    }
+    else {
+        window.parent.setSubTitle('Conference | ' + pageToLoad);
     }
 }
 
@@ -140,7 +128,6 @@ function createPageTiles(searchTerm = '') {
         let thisConf = pageConfs[i];
         let confId = thisConf;
         let imgLink = defaultConfImage;
-        // console.log('thisConf', thisConf);
         if (thisConf.id) {
             confId = thisConf.id;
             if (thisConf.data.thumbnail != '') {
@@ -167,7 +154,7 @@ function createPageTiles(searchTerm = '') {
             imgLink = thisConf.img;
             onclick = `"openExternalLink('${thisConf.link}');"`
         } else {
-            thisDate = (thisDate[1].includes('10') ? 'October' : 'April') + ' ' + thisDate[0];
+            thisDate = (thisDate[1].includes('10') ? 'Oct' : 'Apr') + ' ' + thisDate[0];
         }
 
         // create the tile

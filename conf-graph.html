@@ -54,6 +54,7 @@
 
     </div>
     <script>
+window.parent.setSubTitle('Conference Grapher');
 Array.from(document.querySelectorAll('.toggle div')).forEach(el => el.setAttribute('onclick', `selectThis(this, '${el.parentElement.getAttribute('input-id')}')`));
 function selectThis(me, Iid) {
     me.parentElement.querySelectorAll('.active').forEach( el => el.classList.remove('active') );
