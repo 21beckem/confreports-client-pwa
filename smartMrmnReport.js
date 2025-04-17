@@ -3,7 +3,7 @@ function mrmnPage_init(searchTerm = '') {
     TilesBox.innerHTML += '<div class="overLoader-dimmer"></div><div class="overLoader"><div class="loader"></div></div>';
     let pageToLoadData = [];
     if (pageToLoad == 'main') {
-        window.parent.setSubTitle('Book of Mormon');
+        setPageSubtitle('Book of Mormon');
         for (const bok of BookOfMormon.books_list) {
             let founds = 0;
             let resultsOpacity = 0;
@@ -23,7 +23,7 @@ function mrmnPage_init(searchTerm = '') {
     else if (pageToLoad.includes('book_')) {
         let thisBok = pageToLoad.split('book_')[1];
         console.log(BookOfMormon.books[thisBok]);
-        window.parent.setSubTitle('Book of Mormon | ' + thisBok);
+        setPageSubtitle('Book of Mormon | ' + thisBok);
         
         for (let i = 0; i < BookOfMormon.books[thisBok].chapters; i++) {
             let chapNum = String(i + 1);
@@ -40,7 +40,7 @@ function mrmnPage_init(searchTerm = '') {
                 'title': thisBok + ' ' + chapNum,
                 'founds': founds,
                 'resultsOpacity': resultsOpacity,
-                'onclick': `openExternalLink('https://www.churchofjesuschrist.org/study/scriptures/bofm/${BookOfMormon.books[thisBok]['link-id']}/${chapNum}?lang=eng');`
+                'onclick': `analyzeOrOpen('https://www.churchofjesuschrist.org/study/scriptures/bofm/${BookOfMormon.books[thisBok]['link-id']}/${chapNum}?lang=eng');`
             });
         }
     }
@@ -53,6 +53,11 @@ function flattenChapters(bok) {
         output += bok[String(i + 1)].join('\n');
     }
     return output;
+}
+function setPageSubtitle(str) {
+    try {
+        window.parent.setSubTitle(str);
+    } catch (e) {}
 }
 
 async function createPageTilesFromData(tilesArr) {

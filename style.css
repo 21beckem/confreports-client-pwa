@@ -57,17 +57,20 @@ iframe.appFrame {
 }
 #headerBar .subTitle {
     pointer-events: none;
-    width: fit-content;
     opacity: 0;
     position: relative;
     left: 50%;
-    width: fit-content;
+    width: 100%;
+    text-align: center;
     margin-top: 5px;
     transform: translateX(-50%);
     font-size: 1.5em;
     font-weight: bolder;
     cursor: pointer;
     filter: drop-shadow(3px 3px 0 var(--mid-tone));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     transition: all 0.3s ease;
 }
 #headerBar.cornered .title {
@@ -311,6 +314,7 @@ iframe.appFrame {
     bottom: unset;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
@@ -395,9 +399,9 @@ iframe.appFrame {
 @media screen and (min-width: 800px) {
     #headerBar {
         font-size: 17px;
-        padding: 15px 18px;
-        justify-content: left;
+        padding: 8px 18px;
         border-width: 10px;
+        width: calc(100% - 36px);
     }
     #navBar {
         height: 70px;

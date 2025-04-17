@@ -18,7 +18,7 @@ function confPage_init() {
         DownloadWaiter.add(pageToLoad);
         let thisDate = pageToLoad.split('-');
         thisDate = (thisDate[1].includes('10') ? 'Oct' : 'Apr') + ' ' + thisDate[0];
-        window.parent.setSubTitle('Conference | ' + thisDate);
+        setPageSubtitle('Conference | ' + thisDate);
         
         // first grab that conference, then create the page
         fetch('https://21beckem.github.io/conference-data/' + pageToLoad + '-full.json')
@@ -96,11 +96,16 @@ function createConferencePage() {
                 });
             }
         }
-        window.parent.setSubTitle('Conference');
+        setPageSubtitle('Conference');
     }
     else {
-        window.parent.setSubTitle('Conference | ' + pageToLoad);
+        setPageSubtitle('Conference | ' + pageToLoad);
     }
+}
+function setPageSubtitle(str) {
+    try {
+        window.parent.setSubTitle(str);
+    } catch (e) {}
 }
 
 function preloadImage(url, callback) {
@@ -152,7 +157,8 @@ function createPageTiles(searchTerm = '') {
             isTalk = 'isTalk';
             thisDate = thisConf.title;
             imgLink = thisConf.img;
-            onclick = `"openExternalLink('${thisConf.link}');"`
+            
+            onclick = `"analyzeOrOpen('${thisConf.link}', '${pageToLoad}', ${i});"`;
         } else {
             thisDate = (thisDate[1].includes('10') ? 'Oct' : 'Apr') + ' ' + thisDate[0];
         }

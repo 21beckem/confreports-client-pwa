@@ -1,6 +1,6 @@
 // start the loader right away
 MobileGrapher.setLoader('myGraph');
-window.parent.setSubTitle('Conference Grapher');
+try { window.parent.setSubTitle('Conference Grapher'); } catch (e) {}
 
 // get all the data for me to start working
 let urlPrms = new URLSearchParams(window.location.search);

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="//use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <link rel="stylesheet" href="fonts/Electrum-Exp/Electrum-Exp.css">
+    <script src="https://21beckem.github.io/conference-data/collected-conferences.js"></script>
+    <script src="https://21beckem.github.io/book-of-mormon-data/main.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="jsalert.js"></script>
+    <style>
+#TilesBox {
+    flex-direction: column;
+}
+.tileResults {
+    height: 190px;
+}
+.tileBottom {
+    height: 50px;
+}
+.tileBottom span {
+    font-size: 22px;
+}
+.tileBox {
+    cursor: unset !important;
+    user-select: unset !important;
+    background-color: var(--dark-tone);
+}
+window {
+    width: 100%;
+    height: 220px;
+    padding: 0;
+    margin: 0;
+    display: block;
+}
+window .scroller {
+    width: calc(100% - 10px);
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    margin: 0;
+    padding: 5px;
+    background-color: white;
+    text-align: center;
+}
+h2 {
+    margin: 5px;
+}
+#topWordsTable {
+    width: 60%;
+    margin: 15px auto;
+}
+#topWordsTable tr:nth-child(even) {
+    background-color: var(--light-tone);
+}
+@media screen and (min-width: 800px) {
+    #TilesBox {
+        flex-direction: unset;
+    }
+    .tileBox {
+        flex-basis: calc(50% - 46px);
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="headerBarSpacer"></div>
+    <div id="tilePageParent">
+
+        <div id="tilePageParent">  
+            <div id="TilesBox" class="tileBoxesContainer">
+    
+<div class="tileBox"><window>
+    <div class="scroller">
+        <h2>Top Words</h2>
+        <table id="topWordsTable" cellspacing="0"></table>
+    </div>
+</window></div>
+<div class="tileBox"><window>
+    <div class="scroller" style="overflow: hidden;">
+        <h2>References to Jesus Christ</h2>
+        <div style="font-size: 13px;">(Just an approximation. <a href="#">Learn more.</a>)</div>
+        <div class="tileResults" style="background-color: transparent;">
+            <span id="jesusCount" style="font-size: 130px; color: var(--light-tone);">...</span>
+        </div>
+    </div>
+</window></div>
+<!-- <div class="tileBox"><window>
+    <div class="scroller">
+
+    </div>
+</window></div>
+<div class="tileBox"><window>
+    <div class="scroller">
+
+    </div>
+</window></div>
+<div class="tileBox"><window>
+    <div class="scroller">
+
+    </div>
+</window></div> -->
+    
+            </div>
+        </div>
+
+    </div>
+    <div id="navBarSpacer"></div>
+    <script src="searchAlgorithm.js"></script>
+    <script>
+async function getThisTalk() {
+    let confId = new URLSearchParams(window.location.search).get('confId');
+    let talkI = new URLSearchParams(window.location.search).get('i');
+    let res = await fetch('https://21beckem.github.io/conference-data/' + confId + '-full.json');
+    res = await res.json();
+    // console.log(res);
+    let allTalks = [];
+    for (let i = 0; i < res.sessions.length; i++) {
+        allTalks.push(null);
+        allTalks.push(...res.sessions[i].talks);
+    }
+    let thisTalk = allTalks[parseInt(talkI)-1];
+    try { window.parent.setSubTitle(thisTalk.title) } catch (e) {}
+    return thisTalk;
+}
+class wordCounter {
+    constructor(talk) {
+        this.commonWords = ["tis","twas","able","about","across","after","ain't","all","almost","also","among","and","any","are","aren't","because","been","but","can","can't","cannot","could","could've","couldn't","dear","did","didn't","does","doesn't","don't","either","else","ever","every","for","from","get","got","had","has","hasn't","have","he'd","he'll","he's","her","hers","him","his","how","how'd","how'll","how's","however","i'd","i'll","i'm","i've","into","isn't","it's","its","just","least","let","like","likely","may","might","might've","mightn't","most","must","must've","mustn't","neither","nor","not","off","often","only","other","our","own","rather","said","say","says","shan't","she","she'd","she'll","she's","should","should've","shouldn't","since","some","than","that","that'll","that's","the","their","them","then","there","there's","these","they","they'd","they'll","they're","they've","this","tis","too","twas","wants","was","wasn't","we'd","we'll","we're","were","weren't","what","what'd","what's","when","when","when'd","when'll","when's","where","where'd","where'll","where's","which","while","who","who'd","who'll","who's","whom","why","why'd","why'll","why's","will","with","won't","would","would've","wouldn't","yet","you","you'd","you'll","you're","you've","your", "to", "of", "is"];
+        this.talk = talk;
+        this.wordCountsByAppearance = this.countAllWords();
+        this.sortedDescending = this.sortDescending();
+    }
+    countAllWords() {
+        let wordCounts = { };
+        let words = this.talk.talkText.split(/\b/);
+
+        for(let i = 0; i < words.length; i++) {
+            let trimmed = words[i].toLowerCase().trim();
+            if (trimmed.length <= 1) { continue; }
+            if (trimmed.includes(' ')) { continue; }
+            if (this.commonWords.includes(trimmed)) { continue; }
+            wordCounts["_" + trimmed] = (wordCounts["_" + words[i]] || 0) + 1;
+        }
+        return wordCounts;
+    }
+    sortDescending() {
+        return Object.entries(this.wordCountsByAppearance).sort((a, b) => b[1] - a[1]).map(x => [x[0].slice(1), x[1]]);
+    }
+    occurrences(subString, allowOverlapping) {
+        let string = this.talk.talkText.toLowerCase();
+        subString = subString.toLowerCase();
+        if (subString.length <= 0) return (string.length + 1);
+
+        var n = 0,
+            pos = 0,
+            step = allowOverlapping ? 1 : subString.length;
+
+        while (true) {
+            pos = string.indexOf(subString, pos);
+            if (pos >= 0) {
+                ++n;
+                pos += step;
+            } else break;
+        }
+        return n;
+    }
+    countMatchesOfList(list) {
+        let count = 0;
+        for (let i = 0; i < list.length; i++) {
+            count += this.occurrences(list[i]);
+        }
+        return count;
+    }
+}
+
+// https://www.churchofjesuschrist.org/comeuntochrist/believe/jesus/50-names-for-jesus
+const namesOfChrist = ["Savior","Redeemer","Bread of Life","Lord","Creator","Son of the Living God","Only Begotten Son","Beloved Son","Holy One of Israel","Wonderful","Counsellor","the Mighty God","the Everlasting Father","the Prince of Peace","King of Kings","Head of the Church","The Almighty","Alpha and Omega","Master","King of the Jews","High Priest","Prophet","Teacher","Immanuel","Advocate","Mediator","Judge","Chief Cornerstone","Author and Finisher of Our Faith","Lamb of God","Good Shepherd","The Shepherd and Bishop of Souls","The Word","Fountain of Living Waters","Rock","Messias","True Vine","Branch","Bridegroom","Dayspring","Shiloh","The Lion of the Tribe of Judah","The Bright and Morning Star","The Image of the Invisible God","I Am","Son of Man","Carpenter","The Way, the Truth and the Life","King of Israel","Christ"]
+
+
+async function main() {
+    const talk = await getThisTalk();
+    console.log(talk);
+    let counted = new wordCounter(talk);
+    console.log(counted);
+
+    // make top words table
+    let topWords = counted.sortedDescending.slice(0, 50);
+    let topWordsHTML = '<tr><th>Word</th><th>Count</th></tr>';
+    for (let i = 0; i < topWords.length; i++) {
+        topWordsHTML += '<tr><td>' + topWords[i][0] + '</td><td>' + topWords[i][1] + '</td></tr>';
+    }
+    document.getElementById('topWordsTable').innerHTML = topWordsHTML;
+
+    // refrences to words of christ
+    let christCount = counted.countMatchesOfList(namesOfChrist);
+    document.getElementById('jesusCount').innerHTML = christCount;
+    console.log(christCount);
+}
+main();
+    </script>
+</body>
+</html>

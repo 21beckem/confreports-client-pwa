@@ -58,13 +58,13 @@ if (pg == 'conf') {
 } else {
     mrmnPage_init();
 }
-function openExternalLink(url) {
-    JSAlert.confirm('Open in Gospel Library?', '', 'https://www.churchofjesuschrist.org/imgs/0fd2691a8a019111765601085628ed5183d2c812/full/200%2C/0/default.webp')
-        .then((result) => {
-            if (result) {
-                window.open(url, '_blank');
-            }
-        });
+function analyzeOrOpen(url, confId, i) {
+    console.log(url, confId, i);
+    let a = new JSAlert('Would you like to open this conference or analyze it more?', '');
+    a.setIcon(JSAlert.Icons.Question);
+    a.addButton('Open in Gospel Library').then(res => window.open(url, '_blank') );
+    a.addButton('Analyze More').then(res => location.href = 'alayzer.html?confId=' + confId + '&i=' + i);
+    a.show();
 }
 function doSearch() {
     let searchTerm = document.getElementById('searchInput').value;
@@ -97,6 +97,34 @@ if (sessionStorage.getItem('lastSearchTerm')) {
         DownloadWaiter.setCallback(doSearch);
     }, 100);
 }
+class wordCounter {
+    constructor(talk) {
+        this.commonWords = ["tis","twas","able","about","across","after","ain't","all","almost","also","among","and","any","are","aren't","because","been","but","can","can't","cannot","could","could've","couldn't","dear","did","didn't","does","doesn't","don't","either","else","ever","every","for","from","get","got","had","has","hasn't","have","he'd","he'll","he's","her","hers","him","his","how","how'd","how'll","how's","however","i'd","i'll","i'm","i've","into","isn't","it's","its","just","least","let","like","likely","may","might","might've","mightn't","most","must","must've","mustn't","neither","nor","not","off","often","only","other","our","own","rather","said","say","says","shan't","she","she'd","she'll","she's","should","should've","shouldn't","since","some","than","that","that'll","that's","the","their","them","then","there","there's","these","they","they'd","they'll","they're","they've","this","tis","too","twas","wants","was","wasn't","we'd","we'll","we're","were","weren't","what","what'd","what's","when","when","when'd","when'll","when's","where","where'd","where'll","where's","which","while","who","who'd","who'll","who's","whom","why","why'd","why'll","why's","will","with","won't","would","would've","wouldn't","yet","you","you'd","you'll","you're","you've","your", "to", "of", "is"];
+        this.talk = talk;
+        this.wordCountsByAppearance = this.countAllWords();
+        this.sortedDescending = this.sortDescending();
+    }
+    countAllWords() {
+        let wordCounts = { };
+        let words = this.talk.talkText.split(/\b/);
+
+        for(let i = 0; i < words.length; i++) {
+            let trimmed = words[i].toLowerCase().trim();
+            if (trimmed.length <= 1) { continue; }
+            if (trimmed.includes(' ')) { continue; }
+            if (this.commonWords.includes(trimmed)) { continue; }
+            wordCounts["_" + trimmed] = (wordCounts["_" + words[i]] || 0) + 1;
+        }
+        return wordCounts;
+    }
+    sortDescending() {
+        return Object.entries(this.wordCountsByAppearance).sort((a, b) => b[1] - a[1]).map(x => [x[0].slice(1), x[1]]);
+    }
+}
+let t;
+setTimeout(() => {
+    t = new wordCounter(pageConfs[3]);
+}, 1000);
     </script>
 </body>
 </html>
