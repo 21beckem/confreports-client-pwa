@@ -23,13 +23,37 @@ function initSelectSwiper() {
             // fill in dial
             dial.innerHTML = '';
             const options = dial_select.getAttribute('data-options').split(',');
-            dial.innerHTML += '<div></div><div></div>';
+            dial.appendChild(document.createElement('div'));
+            dial.appendChild(document.createElement('div'));
             options.forEach(option => {
-                let selected = String(option).trim()==String(dial_select.value).trim() ? 'class="selected"' : '';
-                dial.innerHTML += `<div onclick="makeMeSelected(this)" ${selected}>${option}</div>`;
+                let newOption = document.createElement('div');
+                newOption.innerHTML = option;
+                if (String(option).trim()==String(dial_select.value).trim()) {
+                    newOption.classList.add('selected');
+                }
+                console.log(newOption);
+                
+                newOption.onclick = () => {
+                    console.log(newOption);
+                    if (!current_dial_input) { return; }
+                    // remove current selected item
+                    document.querySelector('.dial div.selected').classList.remove('selected');
+                    newOption.classList.add('selected');
+                    const selectedItemTop = newOption.offsetTop;
+                    const containerHeight = dial.clientHeight;
+                    const itemHeight = newOption.clientHeight;
+                    const scrollTo = selectedItemTop - (containerHeight / 2) + (itemHeight / 2);
+                    dial.scrollTo({
+                        top: scrollTo,
+                        left: 0,
+                        behavior: "smooth",
+                    });
+                    highlightSelectedItem(newOption);
+                };
+                dial.appendChild(newOption);
             });
-            dial.innerHTML += '<div></div><div></div>';
-    
+            dial.appendChild(document.createElement('div'));
+            dial.appendChild(document.createElement('div'));
             // show dial popup
             current_dial_input = dial_select;
             dialPopupBox.classList.remove('hidden');
@@ -46,22 +70,6 @@ function initSelectSwiper() {
             highlightSelectedItem();
         });
     });
-    function makeMeSelected(me) {
-        if (!current_dial_input) { return; }
-        // remove current selected item
-        document.querySelector('.dial div.selected').classList.remove('selected');
-        me.classList.add('selected');
-        const selectedItemTop = me.offsetTop;
-        const containerHeight = dial.clientHeight;
-        const itemHeight = me.clientHeight;
-        const scrollTo = selectedItemTop - (containerHeight / 2) + (itemHeight / 2);
-        dial.scrollTo({
-            top: scrollTo,
-            left: 0,
-            behavior: "smooth",
-        });
-        highlightSelectedItem(me);
-    }
     dial.addEventListener('scroll', () => {
         highlightSelectedItemDebounced();
         adjustFontSize();

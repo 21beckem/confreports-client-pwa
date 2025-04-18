@@ -451,9 +451,9 @@ iframe.appFrame {
         border-width: 8px;
         border-radius: 30px;
     }
-    .centerBigBox div:first-child {
+    /* .centerBigBox div:first-child {
         height: 180px !important;
-    }
+    } */
     .tileBox {
         flex-basis: calc(20% - 46px);
         margin: 15px;
