@@ -123,28 +123,30 @@ String.prototype.toTitleCase = function() {
     );
 }
 let thisSessionI = null;
+let thisSession;
 let confId = '';
+let wholeConf;
 async function getThisThing() {
     confId = new URLSearchParams(window.location.search).get('confId');
     let talkI = parseInt( new URLSearchParams(window.location.search).get('i') );
     let res = await fetch('https://21beckem.github.io/conference-data/' + confId + '-full.json');
-    res = await res.json();
-    console.log(res);
+    wholeConf = await res.json();
+    console.log(wholeConf);
 
     if (isNaN(talkI)) { // if no i is set iin URL, then just select this whole conf
-        return res;
+        return wholeConf;
     }
     
     let allTalks = [];
-    for (let i = 0; i < res.sessions.length; i++) {
-        allTalks.push(res.sessions[i].talks);
-        allTalks.push(...res.sessions[i].talks);
+    for (let i = 0; i < wholeConf.sessions.length; i++) {
+        allTalks.push(wholeConf.sessions[i].talks);
+        allTalks.push(...wholeConf.sessions[i].talks);
         if (!thisSessionI && allTalks.length >= talkI) {
-            thisSessionI = allTalks.length - res.sessions[i].talks.length;
+            thisSession = wholeConf.sessions[i];
+            thisSessionI = allTalks.length - wholeConf.sessions[i].talks.length;
         }
     }
     let thisTalk = allTalks[ talkI-1 ];
-    try { window.parent.setSubTitle(thisTalk.title) } catch (e) {}
     return thisTalk;
 }
 class wordCounter {
@@ -222,7 +224,7 @@ function getSpeakerLastName(s) {
 }
 
 // https://www.churchofjesuschrist.org/comeuntochrist/believe/jesus/50-names-for-jesus
-const namesOfChrist = ["Savior","Redeemer","Bread of Life","Lord","Creator","Son of the Living God","Only Begotten Son","Beloved Son","Holy One of Israel","Wonderful","Counsellor","the Mighty God","the Everlasting Father","the Prince of Peace","King of Kings","Head of the Church","The Almighty","Alpha and Omega","Master","King of the Jews","High Priest","Prophet","Teacher","Immanuel","Advocate","Mediator","Judge","Chief Cornerstone","Author and Finisher of Our Faith","Lamb of God","Good Shepherd","The Shepherd and Bishop of Souls","The Word","Fountain of Living Waters","Rock","Messias","True Vine","Branch","Bridegroom","Dayspring","Shiloh","The Lion of the Tribe of Judah","The Bright and Morning Star","The Image of the Invisible God","Son of Man","Carpenter","The Way, the Truth and the Life","King of Israel","Christ"];
+const namesOfChrist = ["Savior","Redeemer","Bread of Life","Lord","Creator","Son of the Living God","Only Begotten Son","Beloved Son","Holy One of Israel","the Mighty God","the Everlasting Father","the Prince of Peace","King of Kings","Head of the Church","The Almighty","Alpha and Omega","Master","King of the Jews","High Priest","Prophet","Teacher","Immanuel","Advocate","Mediator","Judge","Chief Cornerstone","Author and Finisher of Our Faith","Lamb of God","Good Shepherd","The Shepherd and Bishop of Souls","The Word","Fountain of Living Waters","Rock","Messias","True Vine","Branch","Bridegroom","Dayspring","Shiloh","The Lion of the Tribe of Judah","The Bright and Morning Star","The Image of the Invisible God","Son of Man","Carpenter","The Way, the Truth and the Life","King of Israel","Christ"];
 
 
 async function main() {
@@ -230,6 +232,21 @@ async function main() {
     console.log(thisThing);
     let counted = new wordCounter(thisThing);
     console.log(counted);
+    switch (counted.type) {
+        case 'conf':
+            try { window.parent.setSubTitle(thisThing.name) } catch (e) {}
+            break;
+        case 'session':
+            let date = (wholeConf.date[0]==10?'Oct':'Apr') + ' ' + wholeConf.date[1];
+            let sessNam = thisSession.name.replaceAll('-',' ').replace(' session','').trim().toTitleCase()
+            try { window.parent.setSubTitle( date + ' | ' + sessNam ) } catch (e) {}
+            break;
+        case 'talk':
+            try { window.parent.setSubTitle( `${thisThing.title} | ${thisThing.speaker}` ) } catch (e) {}
+            break;
+        default:
+            break;
+    }
 
     // make top words table
     let topWords = counted.sortedDescending.slice(0, 50);
@@ -244,52 +261,58 @@ async function main() {
     document.getElementById('jesusCount').innerHTML = christCount;
     console.log(christCount);
 
-    // graph if it's not a talk
-    if (counted.type != 'talk' && counted.type != 'text') {
-        // format data based on type
-        let data = [];
-        if (counted.type == 'conf') {
-            let lastI = 0;
-            data = thisThing.sessions.map(x => {
-                let toReturn = [
-                    x.name.replaceAll('-', ' ').split('session')[0].trim().toTitleCase(),
-                    x.talks.map(y => y.talkText).join(' '),
-                    ( 'alayzer.html?confId=' + confId + '&i=' + (lastI+1) )
-                ];
-                lastI += x.talks.length + 1;
-                return toReturn;
-            });
-        }
-        else if (counted.type == 'session') {
-            data = thisThing.map((y, i) => [
-                getSpeakerLastName(y.speaker),
-                y.talkText,
-                ( 'alayzer.html?confId=' + confId + '&i=' + (thisSessionI + i+1) )
-            ]);
-        }
-        
-        console.log('graph data:', data);
-        
-        // count occurences of Jesus Christ
-        data = data.map(x => {
-            let t = new wordCounter(x[1]);
-            x[1] = t.countMatchesOfList(namesOfChrist);
-            return x;
-        });
-        
-        
-        // graph the output
-        let myGrapher = new MobileGrapher('myGraph', {
-            bars: data.map(x => x[0]),
-            vals: data.map(x => x[1]),
-            links: data.map(x => x[2]),
-            link_callback: async (thisLink) => {
-                if (await JSAlert.confirm('Do you want to inspect this further?')) {
-                    window.location.href = thisLink;
-                }
-            }
+
+    // format data based on type
+    let data = [];
+    if (counted.type == 'conf') {
+        let lastI = 0;
+        data = thisThing.sessions.map(x => {
+            let toReturn = [
+                x.name.replaceAll('-', ' ').split('session')[0].trim().toTitleCase(),
+                x.talks.map(y => y.talkText).join(' '),
+                ( 'alayzer.html?confId=' + confId + '&i=' + (lastI+1) )
+            ];
+            lastI += x.talks.length + 1;
+            return toReturn;
         });
     }
+    else if (counted.type == 'session') {
+        data = thisThing.map((y, i) => [
+            getSpeakerLastName(y.speaker),
+            y.talkText,
+            ( 'alayzer.html?confId=' + confId + '&i=' + (thisSessionI + i+1) )
+        ]);
+    }
+    else { // talk
+        let i = 1;
+        thisThing.talkText.split('\n').forEach(x => {
+            if (x.trim()=='') { return; }
+            data.push([
+                'p'+i,
+                x,
+                `${thisThing.link}&id=p${i}#p${i}`
+            ]);
+            i++;
+        });
+    }
+    console.log('graph data:', JSON.parse(JSON.stringify(data)));
+    // count occurences of Jesus Christ
+    data = data.map(x => {
+        let t = new wordCounter(x[1]);
+        x[1] = t.countMatchesOfList(namesOfChrist);
+        return x;
+    });
+    // graph the output
+    let myGrapher = new MobileGrapher('myGraph', {
+        bars: data.map(x => x[0]),
+        vals: data.map(x => x[1]),
+        links: data.map(x => x[2]),
+        link_callback: async (thisLink) => {
+            if (await JSAlert.confirm('Do you want to inspect this further?')) {
+                window.open( thisLink, '_blank');
+            }
+        }
+    });
 }
 main();
     </script>
