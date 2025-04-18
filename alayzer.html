@@ -8,6 +8,7 @@
     <script src="https://21beckem.github.io/conference-data/collected-conferences.js"></script>
     <script src="https://21beckem.github.io/book-of-mormon-data/main.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mobileGrapher.css">
     <script src="jsalert.js"></script>
     <style>
 #TilesBox {
@@ -43,6 +44,11 @@ window .scroller {
     padding: 5px;
     background-color: white;
     text-align: center;
+}
+window .scroller.no-scroll {
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
 }
 h2 {
     margin: 5px;
@@ -86,12 +92,12 @@ h2 {
         </div>
     </div>
 </window></div>
-<!-- <div class="tileBox"><window>
-    <div class="scroller">
+<div class="tileBox" style="flex: 1;"><window style="height: 400px;">
+    <div id="myGraph" class="scroller no-scroll">
 
     </div>
 </window></div>
-<div class="tileBox"><window>
+<!-- <div class="tileBox"><window>
     <div class="scroller">
 
     </div>
@@ -108,27 +114,61 @@ h2 {
     </div>
     <div id="navBarSpacer"></div>
     <script src="searchAlgorithm.js"></script>
+    <script src="mobileGrapher.js"></script>
     <script>
+String.prototype.toTitleCase = function() {
+    return this.replace(
+        /\w\S*/g,
+        text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+    );
+}
+let thisSessionI = null;
+let confId = '';
 async function getThisThing() {
-    let confId = new URLSearchParams(window.location.search).get('confId');
-    let talkI = new URLSearchParams(window.location.search).get('i');
+    confId = new URLSearchParams(window.location.search).get('confId');
+    let talkI = parseInt( new URLSearchParams(window.location.search).get('i') );
     let res = await fetch('https://21beckem.github.io/conference-data/' + confId + '-full.json');
     res = await res.json();
-    // console.log(res);
+    console.log(res);
+
+    if (isNaN(talkI)) { // if no i is set iin URL, then just select this whole conf
+        return res;
+    }
+    
     let allTalks = [];
     for (let i = 0; i < res.sessions.length; i++) {
         allTalks.push(res.sessions[i].talks);
         allTalks.push(...res.sessions[i].talks);
+        if (!thisSessionI && allTalks.length >= talkI) {
+            thisSessionI = allTalks.length - res.sessions[i].talks.length;
+        }
     }
-    let thisTalk = allTalks[parseInt(talkI)-1];
+    let thisTalk = allTalks[ talkI-1 ];
     try { window.parent.setSubTitle(thisTalk.title) } catch (e) {}
     return thisTalk;
 }
 class wordCounter {
     constructor(thisThing) {
+        this.thisThing;
         this.commonWords = ["tis","twas","able","about","across","after","ain't","all","almost","also","among","and","any","are","aren't","because","been","but","can","can't","cannot","could","could've","couldn't","dear","did","didn't","does","doesn't","don't","either","else","ever","every","for","from","get","got","had","has","hasn't","have","he'd","he'll","he's","her","hers","him","his","how","how'd","how'll","how's","however","i'd","i'll","i'm","i've","into","isn't","it's","its","just","least","let","like","likely","may","might","might've","mightn't","most","must","must've","mustn't","neither","nor","not","off","often","only","other","our","own","rather","said","say","says","shan't","she","she'd","she'll","she's","should","should've","shouldn't","since","some","than","that","that'll","that's","the","their","them","then","there","there's","these","they","they'd","they'll","they're","they've","this","tis","too","twas","wants","was","wasn't","we'd","we'll","we're","were","weren't","what","what'd","what's","when","when","when'd","when'll","when's","where","where'd","where'll","where's","which","while","who","who'd","who'll","who's","whom","why","why'd","why'll","why's","will","with","won't","would","would've","wouldn't","yet","you","you'd","you'll","you're","you've","your", "to", "of", "is"];
-        this.type = (thisThing.hasOwnProperty('length')) ? 'session' : 'talk';
-        this.allText = (this.type == 'talk') ? thisThing.talkText : thisThing.map(x => x.talkText).join(' ');
+        if (typeof thisThing === 'string') {
+            this.type = 'text';
+            this.allText = thisThing;
+        }
+        else if (thisThing.hasOwnProperty('length')) {
+            this.type = 'session';
+            this.allText = thisThing.map(x => x.talkText).join(' ');
+        }
+        else if (thisThing.hasOwnProperty('sessions')) {
+            this.type = 'conf';
+            this.allText = thisThing.sessions.map(x => {
+                return x.talks.map(y => y.talkText);
+            }).flat().join(' ');
+        }
+        else {
+            this.type = 'talk';
+            this.allText = thisThing.talkText;
+        }
         console.log('type: ' + this.type);
         // console.log(this.allText);
         this.wordCountsByAppearance = this.countAllWords();
@@ -176,15 +216,19 @@ class wordCounter {
         return count;
     }
 }
+function getSpeakerLastName(s) {
+    s = s.split(' ');
+    return s[s.length - 1];
+}
 
 // https://www.churchofjesuschrist.org/comeuntochrist/believe/jesus/50-names-for-jesus
 const namesOfChrist = ["Savior","Redeemer","Bread of Life","Lord","Creator","Son of the Living God","Only Begotten Son","Beloved Son","Holy One of Israel","Wonderful","Counsellor","the Mighty God","the Everlasting Father","the Prince of Peace","King of Kings","Head of the Church","The Almighty","Alpha and Omega","Master","King of the Jews","High Priest","Prophet","Teacher","Immanuel","Advocate","Mediator","Judge","Chief Cornerstone","Author and Finisher of Our Faith","Lamb of God","Good Shepherd","The Shepherd and Bishop of Souls","The Word","Fountain of Living Waters","Rock","Messias","True Vine","Branch","Bridegroom","Dayspring","Shiloh","The Lion of the Tribe of Judah","The Bright and Morning Star","The Image of the Invisible God","Son of Man","Carpenter","The Way, the Truth and the Life","King of Israel","Christ"];
 
 
 async function main() {
-    const talk = await getThisThing();
-    console.log(talk);
-    let counted = new wordCounter(talk);
+    const thisThing = await getThisThing();
+    console.log(thisThing);
+    let counted = new wordCounter(thisThing);
     console.log(counted);
 
     // make top words table
@@ -199,6 +243,53 @@ async function main() {
     let christCount = counted.countMatchesOfList(namesOfChrist);
     document.getElementById('jesusCount').innerHTML = christCount;
     console.log(christCount);
+
+    // graph if it's not a talk
+    if (counted.type != 'talk' && counted.type != 'text') {
+        // format data based on type
+        let data = [];
+        if (counted.type == 'conf') {
+            let lastI = 0;
+            data = thisThing.sessions.map(x => {
+                let toReturn = [
+                    x.name.replaceAll('-', ' ').split('session')[0].trim().toTitleCase(),
+                    x.talks.map(y => y.talkText).join(' '),
+                    ( 'alayzer.html?confId=' + confId + '&i=' + (lastI+1) )
+                ];
+                lastI += x.talks.length + 1;
+                return toReturn;
+            });
+        }
+        else if (counted.type == 'session') {
+            data = thisThing.map((y, i) => [
+                getSpeakerLastName(y.speaker),
+                y.talkText,
+                ( 'alayzer.html?confId=' + confId + '&i=' + (thisSessionI + i+1) )
+            ]);
+        }
+        
+        console.log('graph data:', data);
+        
+        // count occurences of Jesus Christ
+        data = data.map(x => {
+            let t = new wordCounter(x[1]);
+            x[1] = t.countMatchesOfList(namesOfChrist);
+            return x;
+        });
+        
+        
+        // graph the output
+        let myGrapher = new MobileGrapher('myGraph', {
+            bars: data.map(x => x[0]),
+            vals: data.map(x => x[1]),
+            links: data.map(x => x[2]),
+            link_callback: async (thisLink) => {
+                if (await JSAlert.confirm('Do you want to inspect this further?')) {
+                    window.location.href = thisLink;
+                }
+            }
+        });
+    }
 }
 main();
     </script>

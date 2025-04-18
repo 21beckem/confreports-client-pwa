@@ -42,6 +42,7 @@
     background: linear-gradient(90deg, var(--dark-tone) 0%, var(--highlight-tone) 100%);
     text-align: right;
     align-content: center;
+    cursor: pointer;
     color: var(--light-tone);
 }
 .graphRow .graphSquare {
