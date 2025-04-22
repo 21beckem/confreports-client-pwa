@@ -29,6 +29,7 @@ if (formData_formated.stopMon == '04' && flatList[0][1] == '10') { flatList.shif
 let AL = new searchAlgorithm();
 let storedConferences = [];
 let myGrapher;
+let myLineGrapher;
 
 async function fetchConfrences() {
     // fetch each conference
@@ -53,20 +54,60 @@ async function searchConfrences() {
 }
 
 function createGraph(vals) {
+    const GraphLabels = [...flatList].map(x => (x[1]=='04'?'Apr ':'Oct ') + x[0]).reverse();
+    const GraphLinks = [...flatList].map(x => x.join('-')).reverse();
+
     myGrapher.data = {
-        bars: [...flatList].map(x => (x[1]=='04' ? 'April' : 'October') + '<br>' + x[0]),
+        bars: GraphLabels,
         vals: vals,
-        links: [...flatList].map(x => x.join('-')),
-        link_callback: (thisLink) => {
-            JSAlert.confirm('Do you want to inspect this conference?').then((result) => {
-                if (result) {
-                    sessionStorage.setItem('lastSearchTerm', formData_formated.phraseToSearch);
-                    window.location.href = `smart-report.html?pg=conf&page=${thisLink}-full`;
-                }
-            });
+        links: GraphLinks,
+        link_callback: async (thisLink) => {
+            if ( await JSAlert.confirm('Do you want to inspect this conference?') ) {
+                sessionStorage.setItem('lastSearchTerm', formData_formated.phraseToSearch);
+                window.location.href = `smart-report.html?pg=conf&page=${thisLink}-full`;
+            }
         }
     };
     myGrapher.graph();
+
+    console.log(GraphLinks[1]);
+    
+
+    myLineGrapher.data = {
+        labels: GraphLabels,
+        datasets: [{
+            label: 'Conferences',
+            data: vals.reverse(),
+            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--mid-tone'),
+            tension: 0.2
+        }]
+    };
+    myLineGrapher.options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                min: 0,
+                max: Math.round( Math.max(...vals) * 1.5 )
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        onClick: async (event, elements) => {
+            if (elements.length > 0) {
+                const thisLink = GraphLinks[ elements[0].index ];
+
+                if ( await JSAlert.confirm('Do you want to inspect this conference?') ) {
+                    sessionStorage.setItem('lastSearchTerm', formData_formated.phraseToSearch);
+                    window.location.href = `smart-report.html?pg=conf&page=${thisLink}-full`;
+                }
+            }
+        }
+    }
+    myLineGrapher.update();
 }
 
 async function init() {
@@ -74,6 +115,9 @@ async function init() {
     let confVals = await searchConfrences();
     myGrapher = new MobileGrapher('myGraph', {}, false);
     myGrapher.createGraphBody();
+    myLineGrapher = new Chart(document.getElementById('myLineGraph'), {
+        type: 'line'
+    });
     createGraph(confVals);
 
     // fill in found words if needed

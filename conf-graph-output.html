@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://21beckem.github.io/conference-data/collected-conferences.js"></script>
     <link rel="stylesheet" href="mobileGrapher.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="jsalert.js"></script>
     <style>
 html, body {
@@ -127,6 +128,17 @@ input[type="checkbox"]:checked::before {
     #headerBarSpacer {
         height: 60px !important;
     }
+    #myGraph {
+        display: none !important;
+    }
+    #myLineGraph {
+        display: block !important;
+        height: 100%;
+        width: 100%;
+    }
+    .centerBigBoxesContainer {
+        height: calc(100vh - 200px) !important;
+    }
 }
     </style>
 </head>
@@ -137,6 +149,9 @@ input[type="checkbox"]:checked::before {
     <div class="centerBigBoxesContainer">
         <div class="centerBigBox" style="color: var(--mid-tone);">
             <div id="myGraph"></div>
+            <div style="width: calc(100% - 20px); height: calc(100% - 20px); margin: 10px;">
+                <canvas id="myLineGraph" style="display: none;"></canvas>
+            </div>
         </div>
     </div>
 
