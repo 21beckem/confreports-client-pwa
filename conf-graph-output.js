@@ -52,8 +52,12 @@ async function searchConfrences() {
     }
     return confVals;
 }
-
+let firstTimeGraphing = true;
+let graphMax = null;
 function createGraph(vals) {
+    if (graphMax == null) {
+        graphMax = Math.round( Math.max(...vals) * 1.5 );
+    }
     const GraphLabels = [...flatList].map(x => (x[1]=='04'?'Apr ':'Oct ') + x[0]).reverse();
     const GraphLinks = [...flatList].map(x => x.join('-')).reverse();
 
@@ -73,27 +77,30 @@ function createGraph(vals) {
     console.log(GraphLinks[1]);
     
 
-    myLineGrapher.data = {
-        labels: GraphLabels,
-        datasets: [{
-            label: 'Conferences',
-            data: vals.reverse(),
-            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--mid-tone'),
-            tension: 0.2
-        }]
-    };
+    myLineGrapher.data.datasets[0].data = vals.reverse();
     myLineGrapher.options = {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
             y: {
                 min: 0,
-                max: Math.round( Math.max(...vals) * 1.5 )
+                max: graphMax
             }
+        },
+        animation: {
+            duration: firstTimeGraphing ? 1000 : 300
         },
         plugins: {
             legend: {
                 display: false
+            },
+            title: {
+                display: true,
+                text: formData_formated.phraseToSearch,
+                color: getComputedStyle(document.documentElement).getPropertyValue('--mid-tone'),
+                font: {
+                    size: 30
+                }
             }
         },
         onClick: async (event, elements) => {
@@ -108,6 +115,7 @@ function createGraph(vals) {
         }
     }
     myLineGrapher.update();
+    firstTimeGraphing = false;
 }
 
 async function init() {
@@ -116,7 +124,16 @@ async function init() {
     myGrapher = new MobileGrapher('myGraph', {}, false);
     myGrapher.createGraphBody();
     myLineGrapher = new Chart(document.getElementById('myLineGraph'), {
-        type: 'line'
+        type: 'line',
+        data: {
+            labels: [...flatList].map(x => (x[1]=='04'?'Apr ':'Oct ') + x[0]).reverse(),
+            datasets: [{
+                label: 'Conferences',
+                data: [],
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--mid-tone'),
+                tension: 0.2
+            }]
+        },
     });
     createGraph(confVals);
 
