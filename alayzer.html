@@ -9,6 +9,8 @@
     <script src="https://21beckem.github.io/book-of-mormon-data/main.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="mobileGrapher.css">
+    <!-- Word Cloud -->
+    <script src="word-cloud.js"></script>
     <script src="jsalert.js"></script>
     <style>
 #TilesBox {
@@ -46,6 +48,7 @@ window .scroller {
     text-align: center;
 }
 window .scroller.no-scroll {
+    overflow-y: hidden;
     width: 100%;
     padding: 0;
     overflow: hidden;
@@ -97,12 +100,13 @@ h2 {
 
     </div>
 </window></div>
-<!-- <div class="tileBox"><window>
-    <div class="scroller">
-
+<div class="tileBox"><window style="height: 100%;">
+    <div class="scroller no-scroll">
+        <div class="loaderBox"><span class="loader"></span></div>
+        <svg id="WordCloud"></svg>
     </div>
 </window></div>
-<div class="tileBox"><window>
+<!-- <div class="tileBox"><window>
     <div class="scroller">
 
     </div>
@@ -112,7 +116,6 @@ h2 {
         </div>
 
     </div>
-    <div id="navBarSpacer"></div>
     <script src="searchAlgorithm.js"></script>
     <script src="mobileGrapher.js"></script>
     <script>
@@ -178,7 +181,8 @@ class wordCounter {
     }
     countAllWords() {
         let wordCounts = {};
-        let words = this.allText.split(/\b/);
+        let words = this.allText.replace(/[^\w\s]/g, ''); // remove punctuation
+        words = words.split(/\b/); // split into words
 
         for(let i = 0; i < words.length; i++) {
             let trimmed = words[i].toLowerCase().trim();
@@ -313,6 +317,11 @@ async function main() {
             }
         }
     });
+
+    // create word cloud
+    let wordCloudWidth = document.getElementById('WordCloud').parentElement.clientWidth;
+    
+    let wordCloud = new WordCloud('WordCloud', counted.sortedDescending, [wordCloudWidth, wordCloudWidth]);
 }
 main();
     </script>
