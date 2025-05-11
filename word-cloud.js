@@ -105,7 +105,9 @@ class WordCloud {
         this.render(wordsCountsArray, size);
     }
     async render(wordsCountsArray, size) {
-        let loader = JSAlert.loader('loading...');
+        let loader = new JSAlert('<br>This may take a few seconds...', 'Generating Word Cloud');
+        loader.show();
+        loader.cancelable = false;
         await new Promise(r => setTimeout(r, 500));
 
         this.layout = d3.layout.cloud()
@@ -134,7 +136,7 @@ class WordCloud {
           .enter().append("text")
             .style("font-size", function(d) { return d.size + "px"; })
             .style("font-family", "Impact")
-            .style("fill", function(w) { return randomColorBetween("rgb(0,97,133)", "rgb(177,219,232)"); } )
+            .style("fill", function(w) { return randomColorBetween("rgb(0, 148, 83)", "rgb(201, 250, 220)"); } )
             .attr("text-anchor", "middle")
             .attr("transform", function(d) {
               return "translate(" + [d.x, d.y] + ") rotate(" + d.rotate + ")";

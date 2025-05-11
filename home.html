@@ -22,9 +22,38 @@
 .tileBox {
     background-color: var(--dark-tone);
 }
+
+#quoteBar {
+    position: relative;
+    max-width: 470px;
+    margin-bottom: 50px;
+    margin: 0;
+}
+#quoteBar blockquote {
+    font-style: italic;
+    padding: 20px;
+    font-size: 25px;
+    margin: 0;
+}
+#quoteBar img {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 60%;
+    transform: translate(40%, -30%);
+    pointer-events: none;
+}
+
 @media screen and (min-width: 800px) {
     #TilesBox {
         flex-direction: unset;
+    }
+    #quoteBar {
+        margin: auto;
+    }
+    #quoteBar blockquote {
+        margin: 30px;
+        font-size: 30px;
     }
     .tileBox {
         flex-basis: calc(50% - 46px);
@@ -34,7 +63,16 @@
 <body>
     <div id="headerBarSpacer"></div>
 
-    <div id="tilePageParent">  
+    <div id="quoteBar">
+        <blockquote>
+            "We do not doubt our mothers knew it."<br>~Alma 56:48
+            <br><br>
+            I love you, Mom!
+        </blockquote>
+        <img src="img/flora-right.png" alt="flowers">
+    </div>
+
+    <div id="tilePageParent">
         <div id="TilesBox" class="tileBoxesContainer">
 
             <div id="tile_2024-10" class="tileBox " style="background-image: url(img/pulpit.svg)" onclick="window.location.href = 'smart-report.html?pg=conf&page=main';">

@@ -71,6 +71,19 @@ h2 {
         flex-basis: calc(50% - 46px);
     }
 }
+#generateWordCloudBtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid var(--dark-tone);
+    border-radius: 10px;
+    padding: 10px;
+    background-color: var(--very-light-tone);
+    cursor: pointer;
+    box-shadow: 0 0 9px -4px black;
+    font-family: inherit;
+}
     </style>
 </head>
 <body>
@@ -101,7 +114,8 @@ h2 {
     </div>
 </window></div>
 <div class="tileBox"><window style="height: 100%;">
-    <div class="scroller no-scroll">
+    <div class="scroller no-scroll" style="position: relative;">
+        <button id="generateWordCloudBtn">Generate Word Cloud</button>
         <div class="loaderBox"><span class="loader"></span></div>
         <svg id="WordCloud"></svg>
     </div>
@@ -319,9 +333,12 @@ async function main() {
     });
 
     // create word cloud
-    let wordCloudWidth = document.getElementById('WordCloud').parentElement.clientWidth;
     
-    let wordCloud = new WordCloud('WordCloud', counted.sortedDescending, [wordCloudWidth, wordCloudWidth]);
+    document.getElementById('generateWordCloudBtn').onclick = () => {
+        document.getElementById('generateWordCloudBtn').style.display = 'none';
+        let wordCloudWidth = document.getElementById('WordCloud').parentElement.clientWidth;
+        new WordCloud('WordCloud', counted.sortedDescending, [wordCloudWidth, wordCloudWidth]);
+    }
 }
 main();
     </script>
